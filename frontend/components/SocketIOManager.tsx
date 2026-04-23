@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import io, { Socket } from "socket.io-client";
 
 import useConversationStore from "@/stores/useConversationStore";

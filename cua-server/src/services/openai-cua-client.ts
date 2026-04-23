@@ -5,34 +5,38 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+type CuaToolType = "computer" | "computer_use_preview";
+
 // Environment specific instructions for the CUA model e.g., MacOS specific actions CMD+A vs CTRL+A
 const envInstructions = process.env.ENV_SPECIFIC_INSTRUCTIONS || "";
+const configuredModel = process.env.CUA_MODEL || "gpt-5.4";
+const configuredToolType = (
+  process.env.CUA_TOOL_TYPE || "computer"
+) as CuaToolType;
 
-const cuaPrompt = `You are a testing agent. You will be given a list of instructions with steps to test a web application. 
-You will need to navigate the web application and perform the actions described in the instructions.
-Try to accomplish the provided task in the simplest way possible.
-Once you believe your are done with all the tasks required or you are blocked and cannot progress
-(for example, you have tried multiple times to acommplish a task but keep getting errors or blocked),
-use the mark_done tool to let the user know you have finished the tasks.
+const cuaPrompt = `You are a testing agent. You will be given a list of instructions with steps to test a web application.
+You must navigate the web application and perform the actions described in the instructions.
+Use the computer tool to interact with the browser.
+Do not decide that the run is finished on your own. Keep taking the next necessary browser action until the system stops the run.
+If you are blocked, try the documented recovery path in the instructions before attempting anything else.
 You do not need to authenticate on user's behalf, the user will authenticate and your flow starts after that.`;
 
-// Helper: Read display dimensions from env
-const displayWidth: number = parseInt(process.env.DISPLAY_WIDTH || "1024", 10);
-const displayHeight: number = parseInt(process.env.DISPLAY_HEIGHT || "768", 10);
+function resolveToolType(): CuaToolType {
+  if (configuredToolType === "computer" || configuredToolType === "computer_use_preview") {
+    return configuredToolType;
+  }
+
+  logger.warn(
+    `Invalid CUA_TOOL_TYPE '${configuredToolType}'. Falling back to 'computer'.`
+  );
+  return "computer";
+}
+
+const computerToolType = resolveToolType();
 
 const tools = [
   {
-    type: "computer_use_preview",
-    display_width: displayWidth,
-    display_height: displayHeight,
-    environment: "browser",
-  },
-  {
-    type: "function",
-    name: "mark_done",
-    description:
-      "Use this tool to let the user know you have finished the tasks.",
-    parameters: {},
+    type: computerToolType,
   },
 ];
 
@@ -52,11 +56,12 @@ async function callCUAModel(input: any[], previousResponseId?: string) {
   logger.trace("Sending request body to the model...");
 
   const requestBody: any = {
-    model: "computer-use-preview",
+    model: configuredModel,
     tools,
     input,
     reasoning: {
-      generate_summary: "concise",
+      effort: "low",
+      summary: "auto"
     },
     truncation: "auto",
     tool_choice: "required",
@@ -76,10 +81,30 @@ async function callCUAModel(input: any[], previousResponseId?: string) {
       2
     )}`
   );
-  const response = await openai.responses.create(requestBody);
-
-  logger.trace("Received response from the model.");
-  return response;
+  try {
+    const response = await openai.responses.create(requestBody);
+    logger.trace("Received response from the model.");
+    return response;
+  } catch (error: any) {
+    logger.error(
+      {
+        message: error?.message,
+        status: error?.status,
+        code: error?.code,
+        type: error?.type,
+        param: error?.param,
+        request_id: error?.request_id,
+        error: error?.error,
+        response: error?.response?.data,
+        model: requestBody?.model,
+        tool_types: Array.isArray(requestBody?.tools)
+          ? requestBody.tools.map((tool: any) => tool?.type)
+          : [],
+      },
+      "CUA model request failed"
+    );
+    throw error;
+  }
 }
 
 /**
@@ -102,7 +127,13 @@ export async function sendInputToModel(
       call_id: lastCallId,
       type: "computer_call_output",
       output: {
-        type: "input_image",
+        type:
+          computerToolType === "computer"
+            ? "computer_screenshot"
+            : "input_image",
+        ...(computerToolType === "computer"
+          ? { detail: "original" }
+          : {}),
         image_url: `data:image/png;base64,${screenshotBase64}`,
       },
     });

@@ -12,6 +12,28 @@ import TestScriptReviewAgent from "../agents/test-script-review-agent";
 // Check the dimensions of the viewport and reset them to the default values if they are not the default values.
 const defaultWidth = parseInt(process.env.DISPLAY_WIDTH || "1024", 10);
 const defaultHeight = parseInt(process.env.DISPLAY_HEIGHT || "768", 10);
+const TERMINAL_STATUSES = new Set(["pass", "fail"]);
+
+function transitionRunStatus(
+  socket: Socket,
+  nextStatus: "running" | "pass" | "fail"
+): boolean {
+  const currentStatus = (socket.data.testCaseStatus || "pending").toLowerCase();
+
+  if (TERMINAL_STATUSES.has(currentStatus)) return false;
+
+  if (nextStatus === "running" && currentStatus === "pending") {
+    socket.data.testCaseStatus = "running";
+    return true;
+  }
+
+  if ((nextStatus === "pass" || nextStatus === "fail") && currentStatus === "running") {
+    socket.data.testCaseStatus = nextStatus;
+    return true;
+  }
+
+  return false;
+}
 
 export async function computerUseLoop(
   page: Page,
@@ -20,17 +42,34 @@ export async function computerUseLoop(
   socket: Socket,
   switchedToNewTab: boolean = false // <-- Flag to ensure recursion happens only once for a new tab.
 ) {
+  transitionRunStatus(socket, "running");
   await page.screenshot({ path: "screenshot.png" });
   while (true) {
+    testCaseReviewAgent.startNewTurn({ phase: "loop_iteration" });
+
+    const iterationScreenshot = await getScreenshotWithRetry(page);
+    const iterationScreenshotBase64 = iterationScreenshot.toString("base64");
+    const iterationScreenshotPath = testCaseReviewAgent.saveTraceScreenshot(
+      iterationScreenshotBase64,
+      "loop-iteration"
+    );
+    testCaseReviewAgent.appendTraceEvent("model_response_received", {
+      response_id: response?.id ?? null,
+      output_items: Array.isArray(response?.output) ? response.output.length : 0,
+      snapshot_path: iterationScreenshotPath,
+    });
+
     // Check if the test case status is 'fail'.
     if (socket.data.testCaseStatus === "fail") {
       logger.debug("Test case failed. Exiting the computer use loop.");
+      testCaseReviewAgent.finalizeRun("fail");
 
       return response;
     }
 
     if (socket.data.testCaseStatus === "pass") {
       logger.debug("Test case passed. Exiting the computer use loop.");
+      testCaseReviewAgent.finalizeRun("pass");
 
       return response;
     }
@@ -47,6 +86,11 @@ export async function computerUseLoop(
     if (functionCalls.length > 0) {
       for (const funcCall of functionCalls) {
         if (funcCall.name === "mark_done") {
+          testCaseReviewAgent.appendTraceEvent("model_function_call", {
+            response_id: response.id,
+            function_name: funcCall.name,
+            call_id: funcCall.call_id,
+          });
           response = await sendFunctionCallOutput(
             funcCall.call_id,
             response.id,
@@ -54,8 +98,24 @@ export async function computerUseLoop(
               status: "done",
             }
           );
-          socket.emit("message", "\u2705 Test case finished.");
-          socket.data.testCaseStatus = "pass";
+          const verdict = testCaseReviewAgent.getCurrentVerdict();
+          const finalStatus = verdict === "pass" ? "pass" : "fail";
+          const finalMessage =
+            finalStatus === "pass"
+              ? "\u2705 Test case passed."
+              : "Test case failed. Please review the failed or pending steps.";
+          socket.emit("message", finalMessage);
+          transitionRunStatus(socket, finalStatus);
+          testCaseReviewAgent.appendTraceEvent("model_response_received", {
+            response_id: response?.id ?? null,
+            source: "sendFunctionCallOutput",
+          });
+          testCaseReviewAgent.finalizeRun(
+            finalStatus,
+            finalStatus === "fail"
+              ? "CUA marked the run done before all test steps passed."
+              : undefined
+          );
           await page.context().browser()?.close();
           return response;
         }
@@ -141,40 +201,66 @@ export async function computerUseLoop(
           "message",
           "Test case failed. Exiting the computer use loop."
         );
-        socket.data.testCaseStatus = "fail";
+        transitionRunStatus(socket, "fail");
         return response;
       }
 
-      // Continue with the existing logic.
       const lastCallId = (computerCall as any).call_id;
       socket.data.lastCallId = lastCallId;
 
-      const action = (computerCall as any).action;
+      const actions: any[] = Array.isArray((computerCall as any).actions)
+        ? (computerCall as any).actions
+        : (computerCall as any).action
+          ? [(computerCall as any).action]
+          : [];
 
-      // Take a screenshot of the page before the action is executed.
-      if (["click"].includes(action?.type)) {
-        const screenshotBuffer = await page.screenshot();
-        const screenshotBase64 = screenshotBuffer.toString("base64");
-
-        const testScriptReviewResponsePromise =
-          testCaseReviewAgent.checkTestScriptStatus(screenshotBase64);
-        // Asynchronously emit the test script review response to the socket.
-        testScriptReviewResponsePromise
-          .then((testScriptReviewResponse) => {
-            socket.emit("testscriptupdate", testScriptReviewResponse);
-          })
-          .catch((error) => {
-            logger.error(
-              "Error during test script review: {error: " + error + "}"
-            );
-            socket.emit("testscriptupdate", {
-              error: "Review processing failed.",
-            });
-          });
+      if (actions.length === 0) {
+        logger.warn(
+          "Computer call did not include actions; sending fresh screenshot back to model."
+        );
       }
 
-      // Execute the action in the Playwright page.
-      await handleModelAction(page, action);
+      for (const action of actions) {
+        testCaseReviewAgent.appendTraceEvent("model_action_selected", {
+          response_id: response.id,
+          call_id: lastCallId,
+          action,
+        });
+
+        // Take a screenshot of the page before the action is executed.
+        if (["click"].includes(action?.type)) {
+          const screenshotBuffer = await page.screenshot();
+          const screenshotBase64 = screenshotBuffer.toString("base64");
+          const preActionPath = testCaseReviewAgent.saveTraceScreenshot(
+            screenshotBase64,
+            "pre-action",
+            { action_type: action?.type }
+          );
+          testCaseReviewAgent.appendTraceEvent("pre_action_snapshot_captured", {
+            action_type: action?.type,
+            screenshot_path: preActionPath,
+          });
+
+          const testScriptReviewResponsePromise =
+            testCaseReviewAgent.checkTestScriptStatus(screenshotBase64);
+          // Asynchronously emit the test script review response to the socket.
+          testScriptReviewResponsePromise
+            .then((testScriptReviewResponse) => {
+              socket.emit("testscriptupdate", testScriptReviewResponse);
+            })
+            .catch((error) => {
+              logger.error(
+                "Error during test script review: {error: " + error + "}"
+              );
+              socket.emit("testscriptupdate", {
+                error: "Review processing failed.",
+              });
+            });
+        }
+
+        // Execute the action in the Playwright page.
+        await handleModelAction(page, action);
+      }
 
       // Allow some time for UI changes to take effect.
       await page.waitForTimeout(1000);
@@ -214,13 +300,27 @@ export async function computerUseLoop(
         // Take a new screenshot of the new page.
         const screenshotBuffer = await newPage.screenshot();
         const screenshotBase64 = screenshotBuffer.toString("base64");
+        const newTabSnapshotPath = testCaseReviewAgent.saveTraceScreenshot(
+          screenshotBase64,
+          "new-tab-context"
+        );
 
         // Send the screenshot back as a computer_call_output.
+        testCaseReviewAgent.appendTraceEvent("model_request_sent", {
+          request_type: "computer_call_output",
+          previous_response_id: response.id,
+          last_call_id: lastCallId,
+          screenshot_path: newTabSnapshotPath,
+        });
         response = (await sendInputToModel({
           screenshotBase64,
           previousResponseId: response.id,
           lastCallId,
         })) as any;
+        testCaseReviewAgent.appendTraceEvent("model_response_received", {
+          response_id: response?.id ?? null,
+          source: "sendInputToModel_new_tab",
+        });
 
         logger.info(
           "Recursively calling computerUseLoop with new page context."
@@ -244,13 +344,28 @@ export async function computerUseLoop(
 
       screenshotBuffer = await getScreenshotWithRetry(page);
       screenshotBase64 = screenshotBuffer.toString("base64");
+      const postActionPath = testCaseReviewAgent.saveTraceScreenshot(
+        screenshotBase64,
+        "post-action",
+        { action_type: actions[0]?.type ?? "unknown" }
+      );
 
       // Send the screenshot back as a computer_call_output.
+      testCaseReviewAgent.appendTraceEvent("model_request_sent", {
+        request_type: "computer_call_output",
+        previous_response_id: response.id,
+        last_call_id: lastCallId,
+        screenshot_path: postActionPath,
+      });
       response = (await sendInputToModel({
         screenshotBase64,
         previousResponseId: response.id,
         lastCallId,
       })) as any;
+      testCaseReviewAgent.appendTraceEvent("model_response_received", {
+        response_id: response?.id ?? null,
+        source: "sendInputToModel",
+      });
     }
   }
 }

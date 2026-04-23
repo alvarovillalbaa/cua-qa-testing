@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { Step } from "@/stores/useConversationStore";
 
 /* ───── Types ──────────────────────────────────────────────── */
-type Status = "pending" | "pass" | "failed";
+type Status = "pending" | "pass" | "fail";
 
 interface TaskStoreState {
   /* Test‑case steps coming from the backend */

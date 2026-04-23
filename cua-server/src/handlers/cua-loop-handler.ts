@@ -23,21 +23,48 @@ export async function cuaLoopHandler(
   loginRequired: boolean,
   userInfo?: string
 ) {
+  socket.data.testCaseStatus = "running";
+  testCaseReviewAgent.setRunStatus("running");
   logger.info("Starting test script execution...");
   socket.emit("message", "Starting test script execution...");
+  testCaseReviewAgent.appendTraceEvent("cua_loop_started", {
+    url,
+    login_required: loginRequired,
+  });
 
   try {
+    // const browser = await chromium.launch({
+    //   headless: false,
+    //   env: {},
+    //   args: ["--disable-extensions", "--disable-file-system"],
+    // });
+
+    const { chromium } = playwright;
+
     const browser = await chromium.launch({
       headless: false,
       env: {},
-      args: ["--disable-extensions", "--disable-file-system"],
+      args: ["--disable-file-system"], // remove --disable-extensions if you want, but not needed anymore
     });
+
+    const context = await browser.newContext();
+
+    const extraHeaderName = process.env.EXTRA_HEADER_NAME;
+    const extraHeaderValue = process.env.EXTRA_HEADER_VALUE;
+
+    if (!extraHeaderName || !extraHeaderValue) {
+      throw new Error("Missing EXTRA_HEADER_NAME or EXTRA_HEADER_VALUE");
+    }
+
+    await context.setExtraHTTPHeaders({
+      [extraHeaderName]: extraHeaderValue,
+    });
+
+    const page = await context.newPage();
 
     logger.debug("Creating new browser instance...");
 
     socket.emit("message", "Launching browser...");
-
-    const page = await browser.newPage();
 
     // Set the page as data in the socket.
     socket.data.page = page;
@@ -147,6 +174,10 @@ export async function cuaLoopHandler(
     // Start with an initial call (without a screenshot or call_id)
     const userInfoStr = userInfo ?? "";
     let initial_response = await setupCUAModel(systemPrompt, userInfoStr);
+    testCaseReviewAgent.appendTraceEvent("model_response_received", {
+      response_id: initial_response?.id ?? null,
+      source: "setupCUAModel",
+    });
 
     logger.debug(
       `Initial response from CUA model: ${JSON.stringify(
@@ -179,7 +210,30 @@ export async function cuaLoopHandler(
         }
       });
     }
-  } catch (error) {
-    logger.error(`Error during playwright loop: ${error}`);
+  } catch (error: any) {
+    if (socket.data.testCaseStatus !== "pass" && socket.data.testCaseStatus !== "fail") {
+      socket.data.testCaseStatus = "fail";
+    }
+    logger.error(
+      {
+        message: error?.message,
+        status: error?.status,
+        code: error?.code,
+        type: error?.type,
+        param: error?.param,
+        request_id: error?.request_id,
+        error: error?.error,
+        response: error?.response?.data,
+      },
+      "Error during playwright loop"
+    );
+    socket.emit(
+      "message",
+      `Run failed: ${error?.message || "unknown OpenAI error"}`
+    );
+    testCaseReviewAgent.appendTraceEvent("cua_loop_error", {
+      error: String(error),
+    });
+    testCaseReviewAgent.finalizeRun("fail", String(error));
   }
 }

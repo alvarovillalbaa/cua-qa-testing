@@ -44,8 +44,10 @@ export async function handleTestCaseInitiated(
     );
 
     let testScriptReviewResponse = await testCaseReviewAgent.instantiateAgent(
-      `INSTRUCTIONS:\n${testCaseJson}`
+      `INSTRUCTIONS:\n${testCaseJson}`,
+      url
     );
+    testCaseReviewAgent.setRunContext(url);
     logger.trace(
       `Test script state initialized: ${JSON.stringify(
         testScriptReviewResponse,

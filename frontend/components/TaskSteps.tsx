@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -29,13 +29,13 @@ export default function TestScriptStepsTableWidget() {
   );
   const [totalTimeElapsed, setTotalTimeElapsed] = useState<number | null>(null);
 
-  const formatTime = (ms?: number) => {
+  const formatTime = useCallback((ms?: number) => {
     if (!ms) return "";
     const s = Math.floor(ms / 1000);
     return `${Math.floor(s / 60)}m ${s % 60}s`;
-  };
+  }, []);
 
-  const getStepDuration = (n: number): number | null => {
+  const getStepDuration = useCallback((n: number): number | null => {
     const ts = stepTimestamps[n];
     if (!ts || !timerStart) return null;
     const prev = Object.keys(stepTimestamps)
@@ -45,7 +45,7 @@ export default function TestScriptStepsTableWidget() {
       .pop();
     const prevTs = prev !== undefined ? stepTimestamps[prev] : timerStart;
     return ts - prevTs;
-  };
+  }, [stepTimestamps, timerStart]);
 
   /* ─── start timer on first render of steps ─────────── */
   useEffect(() => {
@@ -94,7 +94,7 @@ export default function TestScriptStepsTableWidget() {
     const allPass =
       testCases.length > 0 && testCases.every((s) => s.status === "Pass");
 
-    const nextStatus = hasFail ? "failed" : allPass ? "pass" : "pending";
+    const nextStatus = hasFail ? "fail" : allPass ? "pass" : "pending";
     if (nextStatus !== testCaseUpdateStatus) {
       setTestCaseUpdateStatus(nextStatus as any);
       if (nextStatus !== "pending") emitTestCaseUpdate(nextStatus);
@@ -123,16 +123,23 @@ export default function TestScriptStepsTableWidget() {
           const reasoning = row.original.step_reasoning;
           let Icon = Loader2;
           let cls = "text-slate-600 animate-spin";
+          let label = "Pending";
           if (status === "Pass") {
             Icon = CheckCircle2;
             cls = "text-green-600";
+            label = "Pass";
           } else if (status === "Fail") {
             Icon = XCircle;
             cls = "text-red-600";
+            label = "Fail";
           }
           return (
-            <span title={reasoning}>
-              <Icon className={cls} />
+            <span
+              title={reasoning}
+              className="inline-flex items-center gap-2"
+            >
+              <Icon className={cls} size={18} />
+              <span>{label}</span>
             </span>
           );
         },
@@ -172,7 +179,7 @@ export default function TestScriptStepsTableWidget() {
         },
       },
     ],
-    [stepTimestamps, timerStart]
+    [formatTime, getStepDuration]
   );
 
   const table = useReactTable({

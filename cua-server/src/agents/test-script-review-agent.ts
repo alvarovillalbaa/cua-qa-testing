@@ -7,7 +7,10 @@ import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { TEST_SCRIPT_REVIEW_PROMPT } from "../lib/constants";
+import {
+  TEST_SCRIPT_INITIALIZATION_PROMPT,
+  TEST_SCRIPT_REVIEW_PROMPT,
+} from "../lib/constants";
 
 const openai = new OpenAI();
 
@@ -18,6 +21,28 @@ interface TestScriptState {
     step_reasoning: string;
     image_path?: string;
   }>;
+}
+
+type RunStatus = "pending" | "running" | "pass" | "fail";
+
+interface RunMetadata {
+  run_id: string;
+  url: string | null;
+  started_at: string;
+  finished_at: string | null;
+  final_status: RunStatus;
+  duration_ms: number | null;
+  error_info: string | null;
+}
+
+interface TraceEvent {
+  schema_version: "1.0";
+  id: string;
+  ts: string;
+  type: string;
+  turn_index: number;
+  summary: string;
+  payload: Record<string, any>;
 }
 
 interface Task {
@@ -32,6 +57,9 @@ class TestScriptReviewAgent {
   previous_response_id: string | null;
   test_script_state: TestScriptState | null;
   runFolder: string | null;
+  runMetadata: RunMetadata | null;
+  private turnIndex: number = 0;
+  private eventCounter: number = 0;
 
   // Flag whether to include the previous screenshot response in the input to the LLM - true works best
   includePreviousResponse: boolean = true;
@@ -52,12 +80,222 @@ class TestScriptReviewAgent {
 
     // Initialize runFolder as null; will be set on each new run
     this.runFolder = null;
+    this.runMetadata = null;
+  }
+
+  private getRunFolderPath(): string | null {
+    if (!this.runFolder) return null;
+    return path.join(
+      process.cwd(),
+      "..",
+      "frontend",
+      "public",
+      "test_results",
+      this.runFolder
+    );
+  }
+
+  private ensureRunFolder(): void {
+    const runFolderPath = this.getRunFolderPath();
+    if (!runFolderPath) return;
+    if (!fs.existsSync(runFolderPath)) {
+      fs.mkdirSync(runFolderPath, { recursive: true });
+      logger.debug(`Run folder created: ${runFolderPath}`);
+    }
+  }
+
+  private persistTestScriptStateJson(): void {
+    const runFolderPath = this.getRunFolderPath();
+    if (!runFolderPath || !this.test_script_state) return;
+
+    const stateJsonPath = path.join(runFolderPath, "test_script_state.json");
+    try {
+      fs.writeFileSync(
+        stateJsonPath,
+        JSON.stringify(this.test_script_state, null, 2),
+        "utf-8"
+      );
+      logger.debug(`Test script state saved to: ${stateJsonPath}`);
+    } catch (err) {
+      logger.error("Error saving test_script_state.json", err);
+    }
+  }
+
+  private persistRunSummaryJson(): void {
+    const runFolderPath = this.getRunFolderPath();
+    if (!runFolderPath || !this.runMetadata) return;
+
+    const runJsonPath = path.join(runFolderPath, "run.json");
+    const runSummary = {
+      schema_version: "1.0",
+      run: this.runMetadata,
+      traces: {
+        events_jsonl: `/test_results/${this.runFolder}/events.jsonl`,
+        latest_test_script_state_json: `/test_results/${this.runFolder}/test_script_state.json`,
+      },
+      counters: {
+        turn_count: this.turnIndex,
+        event_count: this.eventCounter,
+        steps_total: this.test_script_state?.steps.length ?? 0,
+        steps_passed:
+          this.test_script_state?.steps.filter((s) => s.status === "Pass")
+            .length ?? 0,
+        steps_failed:
+          this.test_script_state?.steps.filter((s) => s.status === "Fail")
+            .length ?? 0,
+        steps_pending:
+          this.test_script_state?.steps.filter((s) => s.status === "pending")
+            .length ?? 0,
+      },
+    };
+
+    try {
+      fs.writeFileSync(runJsonPath, JSON.stringify(runSummary, null, 2), "utf-8");
+      logger.debug(`Run summary saved to: ${runJsonPath}`);
+    } catch (err) {
+      logger.error("Error saving run summary", err);
+    }
+  }
+
+  private buildEventId(): string {
+    this.eventCounter += 1;
+    return `${this.runFolder || "run"}-${Date.now()}-${this.eventCounter}`;
+  }
+
+  private buildEventSummary(type: string, payload: Record<string, any>): string {
+    if (type === "model_action_selected" && payload.action?.type) {
+      return `Model selected action: ${payload.action.type}`;
+    }
+    if (type === "model_request_sent" && payload.request_type) {
+      return `Sent model request: ${payload.request_type}`;
+    }
+    if (type === "model_response_received" && payload.response_id) {
+      return `Received model response: ${payload.response_id}`;
+    }
+    if (type === "snapshot_saved" && payload.screenshot_type) {
+      return `Snapshot saved: ${payload.screenshot_type}`;
+    }
+    if (type === "run_finalized" && payload.final_status) {
+      return `Run finalized with status: ${payload.final_status}`;
+    }
+    return type.replace(/_/g, " ");
+  }
+
+  appendTraceEvent(type: string, payload: Record<string, any> = {}): void {
+    const runFolderPath = this.getRunFolderPath();
+    if (!runFolderPath) return;
+
+    this.ensureRunFolder();
+    const event: TraceEvent = {
+      schema_version: "1.0",
+      id: this.buildEventId(),
+      ts: new Date().toISOString(),
+      type,
+      turn_index: this.turnIndex,
+      summary: this.buildEventSummary(type, payload),
+      payload,
+    };
+
+    const eventsPath = path.join(runFolderPath, "events.jsonl");
+    try {
+      fs.appendFileSync(eventsPath, JSON.stringify(event) + "\n", "utf-8");
+    } catch (err) {
+      logger.error("Error appending events.jsonl", err);
+    }
+
+    this.persistRunSummaryJson();
+  }
+
+  setRunContext(url: string): void {
+    if (!this.runMetadata) return;
+    this.runMetadata.url = url;
+    this.persistRunSummaryJson();
+  }
+
+  setRunStatus(status: RunStatus): void {
+    if (!this.runMetadata) return;
+    if (this.runMetadata.final_status === "pass" || this.runMetadata.final_status === "fail") {
+      return;
+    }
+    this.runMetadata.final_status = status;
+    this.appendTraceEvent("run_status_updated", {
+      status,
+    });
+    this.persistRunSummaryJson();
+  }
+
+  getCurrentVerdict(): RunStatus {
+    const steps = this.test_script_state?.steps ?? [];
+    if (steps.some((step) => step.status === "Fail")) return "fail";
+    if (steps.length > 0 && steps.every((step) => step.status === "Pass")) {
+      return "pass";
+    }
+    return "pending";
+  }
+
+  startNewTurn(context: Record<string, any> = {}): void {
+    this.turnIndex += 1;
+    this.appendTraceEvent("turn_started", context);
+  }
+
+  saveTraceScreenshot(
+    base64Image: string,
+    screenshotType: string,
+    extra: Record<string, any> = {}
+  ): string | null {
+    if (!this.runFolder) return null;
+    this.ensureRunFolder();
+    const runFolderPath = this.getRunFolderPath();
+    if (!runFolderPath) return null;
+
+    const screenshotFilename = `${this.turnIndex}-${screenshotType}-${uuidv4()}.png`;
+    const screenshotPathLocal = path.join(runFolderPath, screenshotFilename);
+    const publicPath = `/test_results/${this.runFolder}/${screenshotFilename}`;
+
+    try {
+      const bufferData = Buffer.from(base64Image, "base64");
+      fs.writeFileSync(screenshotPathLocal, new Uint8Array(bufferData));
+      this.appendTraceEvent("snapshot_saved", {
+        screenshot_type: screenshotType,
+        screenshot_path: publicPath,
+        ...extra,
+      });
+      return publicPath;
+    } catch (err) {
+      logger.error("Error saving trace screenshot", err);
+      this.appendTraceEvent("snapshot_save_failed", {
+        screenshot_type: screenshotType,
+        error: String(err),
+      });
+      return null;
+    }
+  }
+
+  finalizeRun(status: RunStatus, errorInfo?: string): void {
+    if (!this.runMetadata) return;
+    if (this.runMetadata.final_status === "pass" || this.runMetadata.final_status === "fail") {
+      return;
+    }
+    const finishedAt = new Date().toISOString();
+    this.runMetadata.final_status = status;
+    this.runMetadata.finished_at = finishedAt;
+    this.runMetadata.error_info = errorInfo || null;
+    this.runMetadata.duration_ms =
+      new Date(finishedAt).getTime() -
+      new Date(this.runMetadata.started_at).getTime();
+
+    this.appendTraceEvent("run_finalized", {
+      final_status: status,
+      error_info: this.runMetadata.error_info,
+      duration_ms: this.runMetadata.duration_ms,
+    });
+    this.persistRunSummaryJson();
   }
 
   /**
    * Creates the initial test script state from the user instructions.
    */
-  async instantiateAgent(userInstruction: string): Promise<any> {
+  async instantiateAgent(userInstruction: string, url?: string): Promise<any> {
     logger.debug(
       `Invoking Chat API (instantiateAgent) with instruction: ${userInstruction}`
     );
@@ -68,7 +306,7 @@ class TestScriptReviewAgent {
     const response = await openai.responses.create({
       model: this.model,
       input: [
-        { role: "system", content: TEST_SCRIPT_REVIEW_PROMPT },
+        { role: "system", content: TEST_SCRIPT_INITIALIZATION_PROMPT },
         {
           role: "user",
           content: [
@@ -91,7 +329,7 @@ class TestScriptReviewAgent {
                     step_number: { type: "number" },
                     status: {
                       type: "string",
-                      enum: ["pending", "Pass", "Fail"],
+                      enum: ["pending"],
                     },
                     step_reasoning: { type: "string" },
                   },
@@ -123,18 +361,26 @@ class TestScriptReviewAgent {
 
     // Create a unique folder for this run and store its name in runFolder
     this.runFolder = uuidv4();
-    const runFolderPath = path.join(
-      process.cwd(),
-      "..",
-      "frontend",
-      "public",
-      "test_results",
-      this.runFolder
-    );
-    if (!fs.existsSync(runFolderPath)) {
-      fs.mkdirSync(runFolderPath, { recursive: true });
-      logger.debug(`Run folder created: ${runFolderPath}`);
-    }
+    this.ensureRunFolder();
+    this.runMetadata = {
+      run_id: this.runFolder,
+      url: url || null,
+      started_at: new Date().toISOString(),
+      finished_at: null,
+      final_status: "pending",
+      duration_ms: null,
+      error_info: null,
+    };
+    this.appendTraceEvent("run_initialized", {
+      url: this.runMetadata.url,
+      model: this.model,
+    });
+    this.appendTraceEvent("test_script_model_response_received", {
+      response_id: response.id,
+      source: "instantiateAgent",
+    });
+    this.persistTestScriptStateJson();
+    this.persistRunSummaryJson();
 
     return response.output_text; // Return the raw JSON string for now
   }
@@ -255,6 +501,11 @@ class TestScriptReviewAgent {
     });
 
     logger.debug(`Response output text: ${response.output_text}`);
+    this.appendTraceEvent("test_script_model_response_received", {
+      response_id: response.id,
+      source: "checkTestScriptStatus",
+      previous_response_id: this.previous_response_id,
+    });
 
     // Conditionally update the previous response id based on the config setting.
     if (this.includePreviousResponse) {
@@ -267,16 +518,18 @@ class TestScriptReviewAgent {
     // Ensure the run folder exists (it should be set during instantiateAgent)
     if (!this.runFolder) {
       this.runFolder = uuidv4();
-      const runFolderPath = path.join(
-        process.cwd(),
-        "..",
-        "frontend",
-        "public",
-        "test_results",
-        this.runFolder
-      );
-      fs.mkdirSync(runFolderPath, { recursive: true });
-      logger.debug(`Run folder created: ${runFolderPath}`);
+      this.ensureRunFolder();
+      if (!this.runMetadata) {
+        this.runMetadata = {
+          run_id: this.runFolder,
+          url: null,
+          started_at: new Date().toISOString(),
+          finished_at: null,
+          final_status: "pending",
+          duration_ms: null,
+          error_info: null,
+        };
+      }
     }
 
     // Compare old vs. new test script states to determine if any step transitioned from "pending" -> "Pass"/"Fail".
@@ -295,15 +548,8 @@ class TestScriptReviewAgent {
     if (shouldSaveScreenshot) {
       // Save the screenshot under the run folder within /public/test_results
       const screenshotFilename = uuidv4() + ".png";
-      const screenshotPathLocal = path.join(
-        process.cwd(),
-        "..",
-        "frontend",
-        "public",
-        "test_results",
-        this.runFolder,
-        screenshotFilename
-      );
+      const runFolderPath = this.getRunFolderPath();
+      const screenshotPathLocal = path.join(runFolderPath || "", screenshotFilename);
       try {
         const bufferData = Buffer.from(base64Image, "base64");
         fs.writeFileSync(screenshotPathLocal, new Uint8Array(bufferData));
@@ -343,6 +589,18 @@ class TestScriptReviewAgent {
 
     // Update our internal test_script_state with the new state
     this.test_script_state = newState;
+    this.appendTraceEvent("test_script_state_updated", {
+      total_steps: this.test_script_state.steps.length,
+      passed_steps: this.test_script_state.steps.filter((s) => s.status === "Pass")
+        .length,
+      failed_steps: this.test_script_state.steps.filter((s) => s.status === "Fail")
+        .length,
+      pending_steps: this.test_script_state.steps.filter(
+        (s) => s.status === "pending"
+      ).length,
+    });
+    this.persistTestScriptStateJson();
+    this.persistRunSummaryJson();
 
     // Return the entire updated JSON as a string
     const updatedJson = JSON.stringify(this.test_script_state);

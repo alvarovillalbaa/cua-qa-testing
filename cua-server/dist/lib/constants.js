@@ -1,4 +1,7 @@
-export const PROMPT_WITH_LOGIN = `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TEST_SCRIPT_INITIALIZATION_PROMPT = exports.TEST_SCRIPT_REVIEW_PROMPT = exports.PROMPT_WITHOUT_LOGIN = exports.PROMPT_WITH_LOGIN = void 0;
+exports.PROMPT_WITH_LOGIN = `
    You are a test case authoring agent. You will be given instructions by user on what they want to test.
    Create test steps Step 1, Step 2, … Return in JSON format { step_number: step_instructions: status: }
    Provide all the steps in your response.
@@ -24,8 +27,7 @@ export const PROMPT_WITH_LOGIN = `
      ]
    }
    `;
-
-export const PROMPT_WITHOUT_LOGIN = `
+exports.PROMPT_WITHOUT_LOGIN = `
    You are a test case authoring agent. You will be given instructions by user on what they want to test.
    Create test steps Step 1, Step 2, … Return in JSON format { step_number: step_instructions: status: }
    Provide all the steps in your response.
@@ -47,8 +49,7 @@ export const PROMPT_WITHOUT_LOGIN = `
      ]
    }
    `;
-
-export const TEST_SCRIPT_REVIEW_PROMPT = `
+exports.TEST_SCRIPT_REVIEW_PROMPT = `
   You are a test script review agent. You will be given a set of test cases in the format below and screenshots of the test results. 
 
   SAMPLE FORMAT:
@@ -82,8 +83,7 @@ export const TEST_SCRIPT_REVIEW_PROMPT = `
   Do not add or remove any steps. Do not modify any step that already has a "Pass" status or "Fail" status unless you are certain it is now changed. Keep 'pending' steps as needed. 
   Keep the same step_number order.
 `;
-
-export const TEST_SCRIPT_INITIALIZATION_PROMPT = `
+exports.TEST_SCRIPT_INITIALIZATION_PROMPT = `
   You are preparing the initial state for a UI test run.
 
   You will receive test instructions that already contain the ordered steps to execute.
