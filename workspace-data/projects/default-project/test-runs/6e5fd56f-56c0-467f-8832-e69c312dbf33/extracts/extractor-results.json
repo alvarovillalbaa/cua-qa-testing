@@ -1,0 +1,20 @@
+[
+  {
+    "extractorId": "72bd78f7-82c5-4a9d-b70c-b21d3abe896f",
+    "extractorName": "Chat transcript vision",
+    "kind": "chat_transcript",
+    "source": "vision",
+    "confidence": 0.55,
+    "output": "{\n  \"extractor_kind\": \"chat_transcript\",\n  \"source_type\": \"webpage_screenshot\",\n  \"messages\": [\n    {\n      \"role\": \"assistant\",\n      \"timestamp\": null,\n      \"metadata\": {\n        \"speaker_name\": \"Ibot\",\n        \"visible_ui\": \"chat widget\"\n      },\n      \"text\": \"Hello, I'm Ibot! How can I help you?\"\n    }\n  ],\n  \"visible_metadata\": {\n    \"site\": \"IBERIA\",\n    \"locale\": \"United Kingdom - EN\"\n  }\n}",
+    "updatedAt": "2026-04-23T15:05:39.536Z"
+  },
+  {
+    "extractorId": "ac95765e-5cce-4645-9b6d-b4d9ada14d29",
+    "extractorName": "Error banners vision",
+    "kind": "ui_entities",
+    "source": "vision",
+    "confidence": 0.55,
+    "output": "{\n  \"extractor_kind\": \"ui_entities\",\n  \"error_states\": [\n    {\n      \"type\": \"chat_greeting\",\n      \"text\": \"Hello, I'm Ibot! How can I help you?\",\n      \"visible\": true\n    }\n  ]\n}",
+    "updatedAt": "2026-04-23T15:05:41.983Z"
+  }
+]

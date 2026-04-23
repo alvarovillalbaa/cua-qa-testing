@@ -1,0 +1,71 @@
+[
+  {
+    "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+    "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+    "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+    "sheets": [
+      {
+        "sheetName": "Sheet1",
+        "columns": [
+          "ID",
+          "RAMA",
+          "Resolución",
+          "MOTIVO",
+          "INPUTS (JSON)",
+          "Menú",
+          "Esperado",
+          "Inputs y Outputs (JSON)",
+          "Resultado 1er Intento",
+          "Resultado 2do Intento",
+          "Nombre Tester",
+          "Comentarios testing"
+        ],
+        "sampleRows": [
+          {
+            "ID": 1,
+            "RAMA": "Informacional > RAG",
+            "Resolución": "RAG informacional",
+            "MOTIVO": "Consulta general sobre condiciones y costes de cambio de fecha/hora",
+            "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Cómo puedo cambiar la fecha de mi vuelo y qué costes o suplementos podría tener?\"}]",
+            "Menú": "Debe tratarlo como consulta informacional sobre cambio voluntario. No debe activar el flujo transaccional ni pedir PNR + apellido en el primer mensaje.",
+            "Esperado": "Responde en modo RAG con explicación general del proceso, posibles costes/suplementos y pasos de autogestión. Puede invitar a revisar una reserva concreta, pero no debe asumir intención transaccional cerrada.",
+            "Inputs y Outputs (JSON)": "",
+            "Resultado 1er Intento": "",
+            "Resultado 2do Intento": "",
+            "Nombre Tester": "",
+            "Comentarios testing": ""
+          },
+          {
+            "ID": 2,
+            "RAMA": "Informacional > RAG",
+            "Resolución": "RAG informacional",
+            "MOTIVO": "Consulta general sobre cambio de ruta",
+            "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Se puede cambiar el destino de un billete de Iberia o solo la fecha?\"}]",
+            "Menú": "Debe resolverlo como duda informacional y explicar la diferencia entre cambio de ruta y cambio de fecha/hora.",
+            "Esperado": "Explica que el cambio de ruta no es autogestionable en este flujo y responde de forma informacional. No debe pedir PNR ni entrar directamente en la rama agentic.",
+            "Inputs y Outputs (JSON)": "",
+            "Resultado 1er Intento": "",
+            "Resultado 2do Intento": "",
+            "Nombre Tester": "",
+            "Comentarios testing": ""
+          },
+          {
+            "ID": 3,
+            "RAMA": "Transaccional > Inicio",
+            "Resolución": "Solicita validación de causa médica",
+            "MOTIVO": "Inicio transaccional genérico sin detallar tipo de cambio",
+            "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"Quiero cambiar mi vuelo.\"}]",
+            "Menú": "Primer paso del flujo: preguntar si el cambio es por causa médica e incluir recordatorio del formulario médico.",
+            "Esperado": "Pregunta de forma clara si el cambio se debe a una causa médica debidamente justificada. No debe pedir todavía PNR + apellido ni derivar a web/app.",
+            "Inputs y Outputs (JSON)": "",
+            "Resultado 1er Intento": "",
+            "Resultado 2do Intento": "",
+            "Nombre Tester": "",
+            "Comentarios testing": ""
+          }
+        ],
+        "rowCount": 53
+      }
+    ]
+  }
+]

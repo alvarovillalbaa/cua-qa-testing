@@ -1,0 +1,10 @@
+{
+  "extractor_kind": "ui_entities",
+  "error_states": [
+    {
+      "type": "chat_greeting",
+      "text": "Hello, I'm Ibot! How can I help you?",
+      "visible": true
+    }
+  ]
+}

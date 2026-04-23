@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "verdict": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "transcript": {
+      "type": "array"
+    }
+  }
+}

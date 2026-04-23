@@ -57,7 +57,7 @@ class TestScriptReviewAgent {
             logger_1.default.debug(`Test script state saved to: ${stateJsonPath}`);
         }
         catch (err) {
-            logger_1.default.error("Error saving test_script_state.json", err);
+            logger_1.default.error({ err }, "Error saving test_script_state.json");
         }
     }
     persistRunSummaryJson() {
@@ -89,7 +89,7 @@ class TestScriptReviewAgent {
             logger_1.default.debug(`Run summary saved to: ${runJsonPath}`);
         }
         catch (err) {
-            logger_1.default.error("Error saving run summary", err);
+            logger_1.default.error({ err }, "Error saving run summary");
         }
     }
     buildEventId() {
@@ -133,7 +133,7 @@ class TestScriptReviewAgent {
             fs_1.default.appendFileSync(eventsPath, JSON.stringify(event) + "\n", "utf-8");
         }
         catch (err) {
-            logger_1.default.error("Error appending events.jsonl", err);
+            logger_1.default.error({ err }, "Error appending events.jsonl");
         }
         this.persistRunSummaryJson();
     }
@@ -189,7 +189,7 @@ class TestScriptReviewAgent {
             return publicPath;
         }
         catch (err) {
-            logger_1.default.error("Error saving trace screenshot", err);
+            logger_1.default.error({ err }, "Error saving trace screenshot");
             this.appendTraceEvent("snapshot_save_failed", {
                 screenshot_type: screenshotType,
                 error: String(err),
@@ -436,7 +436,7 @@ class TestScriptReviewAgent {
                 logger_1.default.debug(`Screenshot saved to: ${screenshotPathLocal}`);
             }
             catch (err) {
-                logger_1.default.error("Error saving screenshot", err);
+                logger_1.default.error({ err }, "Error saving screenshot");
             }
             // Iterate through steps and attach the screenshot path only for those with a status change.
             for (const newStep of newState.steps) {

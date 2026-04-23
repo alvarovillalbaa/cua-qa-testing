@@ -1,0 +1,20 @@
+[
+  {
+    "extractorId": "72bd78f7-82c5-4a9d-b70c-b21d3abe896f",
+    "extractorName": "Chat transcript vision",
+    "kind": "chat_transcript",
+    "source": "vision",
+    "confidence": 0.55,
+    "output": "{\n  \"extractor_kind\": \"chat_transcript\",\n  \"source_type\": \"webpage_screenshot\",\n  \"turns\": [\n    {\n      \"speaker\": \"assistant\",\n      \"text\": \"Hello, I'm Ibot! How can I help you?\",\n      \"timestamp\": null,\n      \"visible_metadata\": {\n        \"agent_name\": \"Ibot\"\n      }\n    }\n  ]\n}",
+    "updatedAt": "2026-04-23T15:13:59.395Z"
+  },
+  {
+    "extractorId": "ac95765e-5cce-4645-9b6d-b4d9ada14d29",
+    "extractorName": "Error banners vision",
+    "kind": "ui_entities",
+    "source": "vision",
+    "confidence": 0.55,
+    "output": "{\n  \"extractor_kind\": \"ui_entities\",\n  \"error_states\": []\n}",
+    "updatedAt": "2026-04-23T15:14:01.415Z"
+  }
+]

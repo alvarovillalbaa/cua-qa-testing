@@ -8,6 +8,7 @@ exports.sendFunctionCallOutput = sendFunctionCallOutput;
 exports.setupCUAModel = setupCUAModel;
 const openai_1 = __importDefault(require("openai"));
 const logger_1 = __importDefault(require("../utils/logger"));
+const openai_file_utils_1 = require("../lib/openai-file-utils");
 const openai = new openai_1.default({
     apiKey: process.env.OPENAI_API_KEY,
 });
@@ -20,7 +21,8 @@ You must navigate the web application and perform the actions described in the i
 Use the computer tool to interact with the browser.
 Do not decide that the run is finished on your own. Keep taking the next necessary browser action until the system stops the run.
 If you are blocked, try the documented recovery path in the instructions before attempting anything else.
-You do not need to authenticate on user's behalf, the user will authenticate and your flow starts after that.`;
+You do not need to authenticate on user's behalf, the user will authenticate and your flow starts after that.
+Use the capture_data tool only when you need to persist structured visible data that is not already deterministically captured by the default telemetry and extractors.`;
 function resolveToolType() {
     if (configuredToolType === "computer" || configuredToolType === "computer_use_preview") {
         return configuredToolType;
@@ -33,14 +35,40 @@ const tools = [
     {
         type: computerToolType,
     },
+    {
+        type: "function",
+        name: "capture_data",
+        description: "Store structured data visible in the current UI according to a named schema. Use this only for ambiguous or domain-specific data capture.",
+        strict: true,
+        parameters: {
+            type: "object",
+            properties: {
+                schema_name: {
+                    type: "string",
+                    description: "Named schema such as chatbot_turn, booking_summary, modal_options.",
+                },
+                payload_json: {
+                    type: "string",
+                    description: "JSON string with the structured data visible in the UI right now.",
+                },
+                notes: {
+                    type: "string",
+                    description: "Short note explaining why this capture was needed.",
+                },
+            },
+            required: ["schema_name", "payload_json"],
+            additionalProperties: false,
+        },
+    },
 ];
 // Helper to construct and send a request to the CUA model
 async function callCUAModel(input, previousResponseId) {
     logger_1.default.trace("Sending request body to the model...");
+    const sanitizedInput = (0, openai_file_utils_1.sanitizeResponseInput)(input);
     const requestBody = {
         model: configuredModel,
         tools,
-        input,
+        input: sanitizedInput,
         reasoning: {
             effort: "low",
             summary: "auto"
@@ -118,7 +146,7 @@ async function sendFunctionCallOutput(callId, previousResponseId, outputObj = {}
     ];
     return callCUAModel(input, previousResponseId);
 }
-async function setupCUAModel(systemPrompt, userInfo) {
+async function setupCUAModel(systemPrompt, userInfo, inputFiles = []) {
     logger_1.default.trace("Setting up CUA model...");
     const input = [];
     const cua_initiation_prompt = `${cuaPrompt}
@@ -133,7 +161,13 @@ async function setupCUAModel(systemPrompt, userInfo) {
     });
     input.push({
         role: "user",
-        content: `INSTRUCTIONS:\n${systemPrompt}\n\nUSER INFO:\n${userInfo}`,
+        content: [
+            {
+                type: "input_text",
+                text: `INSTRUCTIONS:\n${systemPrompt}\n\nUSER INFO:\n${userInfo}`,
+            },
+            ...inputFiles,
+        ],
     });
     return callCUAModel(input);
 }

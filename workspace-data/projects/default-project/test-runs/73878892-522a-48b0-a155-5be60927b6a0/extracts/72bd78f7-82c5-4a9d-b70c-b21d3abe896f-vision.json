@@ -1,0 +1,14 @@
+{
+  "extractor_kind": "chat_transcript",
+  "source_type": "webpage_screenshot",
+  "turns": [
+    {
+      "speaker": "assistant",
+      "text": "Hello, I'm Ibot! How can I help you?",
+      "timestamp": null,
+      "visible_metadata": {
+        "agent_name": "Ibot"
+      }
+    }
+  ]
+}

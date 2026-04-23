@@ -1,0 +1,1 @@
+When login is required, complete the authentication flow before evaluating the rest of the task. Reuse the shared system prompt and add only the login-specific guidance.

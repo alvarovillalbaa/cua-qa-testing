@@ -13,6 +13,7 @@ export async function handleSocketMessage(
   const page = socket.data.page;
   const previousResponseId = socket.data.previousResponseId;
   const testCaseReviewAgent = socket.data.testCaseReviewAgent;
+  const runRecorder = socket.data.runRecorder;
 
   const screenshot = await page.screenshot();
   const screenshotBase64 = screenshot.toString("base64");
@@ -30,6 +31,7 @@ export async function handleSocketMessage(
     page,
     resumeResponse,
     testCaseReviewAgent,
+    runRecorder,
     socket
   );
 

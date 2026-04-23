@@ -1,0 +1,54 @@
+{
+  "runId": "cf7a38a9-69b3-48fb-88ac-1e3a7266cf21",
+  "projectId": "default-project",
+  "testCaseId": "default-test-case",
+  "status": "running",
+  "startedAt": "2026-04-23T15:33:40.634Z",
+  "finishedAt": null,
+  "errorInfo": null,
+  "currentAction": null,
+  "steps": [
+    {
+      "step_number": 1,
+      "step_instructions": "Open a web browser and navigate to the URL: https://pre.iberia.com",
+      "status": "running",
+      "step_reasoning": "Waiting for evidence from the execution run."
+    },
+    {
+      "step_number": 2,
+      "step_instructions": "Locate the IBot in the lower right corner. Click the pencil icon (reset chat) if needed. Then, send the Test 40 message: 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?'. Wait at least 30 seconds for a response (if over 90 seconds without response, look for error messages such as 'Preparando tu mensaje' or connection issues). Capture the complete transcript (Inputs y Outputs JSON) for this first attempt.",
+      "status": "pending",
+      "step_reasoning": "Waiting for evidence from the execution run."
+    },
+    {
+      "step_number": 3,
+      "step_instructions": "After receiving the response for Test 40 attempt 1, click the pencil icon at the top right to reset the chat. Resend the same Test 40 message: 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?' to perform the second attempt. Again, wait for and capture the transcript (Inputs y Outputs JSON) for attempt 2.",
+      "status": "pending",
+      "step_reasoning": "Waiting for evidence from the execution run."
+    },
+    {
+      "step_number": 4,
+      "step_instructions": "Reset the chat via the pencil icon. Send the Test 41 message: '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?' and wait for the chatbot's response. When prompted, reply with 'No, gracias' to conclude the conversational flow. Capture the complete transcript (including Inputs y Outputs JSON) for the first attempt.",
+      "status": "pending",
+      "step_reasoning": "Waiting for evidence from the execution run."
+    },
+    {
+      "step_number": 5,
+      "step_instructions": "Click the pencil icon to reset the chat again. Repeat Test 41: send '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?' and, when required, respond with 'No, gracias'. Capture the transcript (Inputs y Outputs JSON) for the second attempt.",
+      "status": "pending",
+      "step_reasoning": "Waiting for evidence from the execution run."
+    },
+    {
+      "step_number": 6,
+      "step_instructions": "Reset the chat by clicking the pencil icon. For Test 42 attempt 1, send the message: 'Acepto el otro vuelo, hacédmelo ya.' and wait for the chatbot to request PNR + apellido before proceeding. Capture the transcript (Inputs y Outputs JSON) noting that the bot must ask for PNR + apellido.",
+      "status": "pending",
+      "step_reasoning": "Waiting for evidence from the execution run."
+    },
+    {
+      "step_number": 7,
+      "step_instructions": "After completing Test 42 attempt 1, reset the chat using the pencil icon. Resend the Test 42 message: 'Acepto el otro vuelo, hacédmelo ya.' for the second attempt. Ensure the bot again prompts for PNR + apellido and capture the transcript (Inputs y Outputs JSON) for this attempt.",
+      "status": "pending",
+      "step_reasoning": "Waiting for evidence from the execution run."
+    }
+  ]
+}

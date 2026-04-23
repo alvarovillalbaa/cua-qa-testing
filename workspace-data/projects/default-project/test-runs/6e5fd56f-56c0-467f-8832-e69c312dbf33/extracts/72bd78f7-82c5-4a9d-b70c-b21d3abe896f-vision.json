@@ -1,0 +1,19 @@
+{
+  "extractor_kind": "chat_transcript",
+  "source_type": "webpage_screenshot",
+  "messages": [
+    {
+      "role": "assistant",
+      "timestamp": null,
+      "metadata": {
+        "speaker_name": "Ibot",
+        "visible_ui": "chat widget"
+      },
+      "text": "Hello, I'm Ibot! How can I help you?"
+    }
+  ],
+  "visible_metadata": {
+    "site": "IBERIA",
+    "locale": "United Kingdom - EN"
+  }
+}

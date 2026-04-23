@@ -1,0 +1,12 @@
+{
+  "id": "default-project",
+  "name": "Iberia QA Workspace",
+  "description": "Persistent local workspace for configurable CUA-driven QA runs.",
+  "tags": [
+    "chatbot",
+    "localhost",
+    "playwright"
+  ],
+  "baseUrl": "https://pre.iberia.com",
+  "analyticsViews": []
+}

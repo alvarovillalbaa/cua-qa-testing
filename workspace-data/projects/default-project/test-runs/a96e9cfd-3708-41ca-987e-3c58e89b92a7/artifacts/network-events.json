@@ -1,0 +1,33 @@
+[
+  {
+    "method": "GET",
+    "url": "https://pre.iberia.com/",
+    "headers": {
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Chromium\";v=\"147\", \"Not.A/Brand\";v=\"8\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"macOS\""
+    },
+    "type": "request"
+  },
+  {
+    "status": 401,
+    "url": "https://pre.iberia.com/",
+    "headers": {
+      "cache-control": "max-age=420",
+      "content-length": "368",
+      "content-type": "text/html",
+      "date": "Thu, 23 Apr 2026 14:16:41 GMT",
+      "expires": "Thu, 23 Apr 2026 14:23:41 GMT",
+      "link": "<https://pre.iberia.com/wcs_statics/css/fonts/iberia/woff2/iberia.woff2>;rel=\"preload\";as=\"font\";type=\"font/woff2\";crossorigin,<https://pre.iberia.com/wcs_statics/css/fonts/iberiaheadline/woff2/iberiaheadline.woff2>;rel=\"preload\";as=\"font\";type=\"font/woff2\";crossorigin,<https://pre.iberia.com/wcs_statics/css/fonts/iberiatext/woff2/iberiatext.woff2>;rel=\"preload\";as=\"font\";type=\"font/woff2\";crossorigin",
+      "mime-version": "1.0",
+      "server": "AkamaiGHost",
+      "server-timing": "cdn-cache; desc=HIT\nedge; dur=1\nak_p; desc=\"1776953801318_389797767_1598205893_29_26746_60_67_255\";dur=1",
+      "strict-transport-security": "max-age=600",
+      "www-authenticate": "Basic realm=\"secure\""
+    },
+    "bodyText": "<html></html>",
+    "type": "response"
+  }
+]

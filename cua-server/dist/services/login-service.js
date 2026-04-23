@@ -31,7 +31,7 @@ class LoginService {
             return true;
         }
         catch (error) {
-            logger_1.default.error("❌ Error filling login credentials:", error);
+            logger_1.default.error({ error }, "Error filling login credentials");
             return false;
         }
     }
@@ -56,7 +56,7 @@ class LoginService {
             return true;
         }
         catch (error) {
-            logger_1.default.error("❌ Error clicking login button:", error);
+            logger_1.default.error({ error }, "Error clicking login button");
             return false;
         }
     }

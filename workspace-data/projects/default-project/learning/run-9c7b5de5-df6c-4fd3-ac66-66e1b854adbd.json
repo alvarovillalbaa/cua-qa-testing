@@ -1,0 +1,10 @@
+{
+  "lastUpdated": "2026-04-23T14:16:46.604Z",
+  "patterns": [
+    "Runtime failure: Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+    "No transcript turns extracted. Prefer stronger DOM/network selectors.",
+    "Failed evaluators: Primary evaluator"
+  ],
+  "transcriptTurns": 0,
+  "status": "fail"
+}

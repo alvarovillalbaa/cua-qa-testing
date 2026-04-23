@@ -1,0 +1,9 @@
+{
+  "lastUpdated": "2026-04-23T15:14:06.646Z",
+  "patterns": [
+    "Runtime failure: Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+    "Failed evaluators: Primary evaluator"
+  ],
+  "transcriptTurns": 284,
+  "status": "fail"
+}

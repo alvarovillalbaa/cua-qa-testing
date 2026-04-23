@@ -1,0 +1,9 @@
+{
+  "lastUpdated": "2026-04-23T15:05:48.569Z",
+  "patterns": [
+    "Runtime failure: Error: 400 Mutually exclusive parameters: 'input[1].content[1]'. Ensure you are only providing one of: 'file_id' or 'filename'.",
+    "Failed evaluators: Primary evaluator"
+  ],
+  "transcriptTurns": 402,
+  "status": "fail"
+}

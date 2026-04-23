@@ -30,6 +30,7 @@ io.on("connection", (socket) => {
     logger_1.default.info(`New client connected: ${socket.id}`);
     // Initialize socket data
     socket.data.testCaseReviewAgent = undefined;
+    socket.data.runRecorder = undefined;
     socket.data.lastCallId = undefined;
     socket.data.previousResponseId = undefined;
     socket.data.testCaseStatus = "pending";

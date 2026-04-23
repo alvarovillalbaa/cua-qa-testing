@@ -1,0 +1,1 @@
+Inspect uploaded inputs, infer useful structure, and prepare a resolved run input bundle. Prefer extracting exact headers, columns, and sample rows.

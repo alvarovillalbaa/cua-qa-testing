@@ -8,9 +8,6 @@ import TaskSteps from "@/components/TaskSteps";
 export default function Main() {
   const [isSideOpen, setIsSideOpen] = useState(false);
 
-  /* show TaskSteps only after the configuration is submitted */
-  const [configSubmitted, setConfigSubmitted] = useState(false);
-
   return (
     /* column that fills the <main> area supplied by layout.tsx */
     <div className="flex flex-col h-full">
@@ -41,10 +38,8 @@ export default function Main() {
       <div className="flex flex-1 min-h-0">
         {/* LEFT COLUMN – form / summary + (conditional) task table  */}
         <div className="flex flex-col w-full sm:w-3/4 overflow-y-auto">
-          <ConfigPanel onSubmitted={() => setConfigSubmitted(true)} />
-
-          {/* Show task-steps only after the config has been submitted */}
-          {configSubmitted && <TaskSteps />}
+          <ConfigPanel />
+          <TaskSteps />
         </div>
 
         {/* RIGHT COLUMN – agent side-panel – fixed width & full height */}

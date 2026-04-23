@@ -5,6 +5,8 @@ import io, { Socket } from "socket.io-client";
 
 import useConversationStore from "@/stores/useConversationStore";
 import useTaskStore from "@/stores/useTaskStore";
+import useWorkspaceStore from "@/stores/useWorkspaceStore";
+import type { CurrentRunSnapshot, WorkspacePayload } from "@/lib/workspace-types";
 
 /** One singleton client socket. */
 let socket: Socket | null = null;
@@ -31,6 +33,9 @@ export function SocketIOManager() {
   );
   const setTestCases = useTaskStore((s) => s.setTestCases);
   const updateTestScript = useTaskStore((s) => s.updateTestScript);
+  const setCurrentRunSnapshot = useTaskStore((s) => s.setCurrentRunSnapshot);
+  const setWorkspaceData = useWorkspaceStore((s) => s.setWorkspaceData);
+  const selection = useWorkspaceStore((s) => s.selection);
 
   useEffect(() => {
     // Connect to standalone WebSocket server
@@ -46,7 +51,14 @@ export function SocketIOManager() {
       socket.on("testcases", (msg: string) => {
         try {
           const parsed = JSON.parse(msg);
-          if (Array.isArray(parsed.steps)) setTestCases(parsed.steps);
+          if (Array.isArray(parsed.steps)) {
+            setTestCases(
+              parsed.steps.map((step: any) => ({
+                ...step,
+                status: step.status?.toLowerCase?.() || "pending",
+              }))
+            );
+          }
         } catch (err) {
           console.error("✖ parse testcases", err);
         }
@@ -57,9 +69,50 @@ export function SocketIOManager() {
         try {
           const parsed =
             typeof payload === "string" ? JSON.parse(payload) : payload;
-          if (Array.isArray(parsed.steps)) updateTestScript(parsed.steps);
+          if (Array.isArray(parsed.steps)) {
+            updateTestScript(
+              parsed.steps.map((step: any) => ({
+                ...step,
+                status:
+                  step.status === "Pass"
+                    ? "pass"
+                    : step.status === "Fail"
+                      ? "fail"
+                      : step.status?.toLowerCase?.() || "pending",
+              }))
+            );
+          }
         } catch (err) {
           console.error("✖ parse testscriptupdate", err);
+        }
+      });
+
+      socket.on("runstate", async (payload: CurrentRunSnapshot) => {
+        setCurrentRunSnapshot(payload);
+
+        if (payload.status === "pass" || payload.status === "fail") {
+          try {
+            const params = new URLSearchParams();
+            if (selection?.projectId) params.set("projectId", selection.projectId);
+            if (selection?.testCaseId) params.set("testCaseId", selection.testCaseId);
+            const response = await fetch(
+              `/api/workspace${params.toString() ? `?${params.toString()}` : ""}`
+            );
+            if (!response.ok) return;
+            const workspacePayload =
+              (await response.json()) as WorkspacePayload;
+            setWorkspaceData(
+              workspacePayload.selection,
+              workspacePayload.projects,
+              workspacePayload.testCases,
+              workspacePayload.workspace,
+              workspacePayload.runs,
+              workspacePayload.analytics,
+              workspacePayload.learning
+            );
+          } catch (error) {
+            console.error("✖ refresh workspace after terminal run", error);
+          }
         }
       });
 
@@ -82,7 +135,15 @@ export function SocketIOManager() {
       socket?.disconnect();
       socket = null;
     };
-  }, [addChatMessage, addConversationItem, setTestCases, updateTestScript]);
+  }, [
+    addChatMessage,
+    addConversationItem,
+    setCurrentRunSnapshot,
+    setTestCases,
+    setWorkspaceData,
+    selection,
+    updateTestScript,
+  ]);
 
   return null;
 }

@@ -1,0 +1,1 @@
+Use deterministic evidence first. Capture exact transcripts when testing chatbots and preserve exact outputs for later file generation.

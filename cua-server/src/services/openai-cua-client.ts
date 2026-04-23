@@ -1,5 +1,9 @@
 import OpenAI from "openai";
 import logger from "../utils/logger";
+import {
+  OpenAIResponseInputFile,
+  sanitizeResponseInput,
+} from "../lib/openai-file-utils";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -19,7 +23,8 @@ You must navigate the web application and perform the actions described in the i
 Use the computer tool to interact with the browser.
 Do not decide that the run is finished on your own. Keep taking the next necessary browser action until the system stops the run.
 If you are blocked, try the documented recovery path in the instructions before attempting anything else.
-You do not need to authenticate on user's behalf, the user will authenticate and your flow starts after that.`;
+You do not need to authenticate on user's behalf, the user will authenticate and your flow starts after that.
+Use the capture_data tool only when you need to persist structured visible data that is not already deterministically captured by the default telemetry and extractors.`;
 
 function resolveToolType(): CuaToolType {
   if (configuredToolType === "computer" || configuredToolType === "computer_use_preview") {
@@ -38,6 +43,33 @@ const tools = [
   {
     type: computerToolType,
   },
+  {
+    type: "function" as const,
+    name: "capture_data",
+    description:
+      "Store structured data visible in the current UI according to a named schema. Use this only for ambiguous or domain-specific data capture.",
+    strict: true,
+    parameters: {
+      type: "object",
+      properties: {
+        schema_name: {
+          type: "string",
+          description: "Named schema such as chatbot_turn, booking_summary, modal_options.",
+        },
+        payload_json: {
+          type: "string",
+          description:
+            "JSON string with the structured data visible in the UI right now.",
+        },
+        notes: {
+          type: "string",
+          description: "Short note explaining why this capture was needed.",
+        },
+      },
+      required: ["schema_name", "payload_json"],
+      additionalProperties: false,
+    },
+  },
 ];
 
 interface OpenAIResponse {
@@ -54,11 +86,12 @@ export interface ModelInput {
 // Helper to construct and send a request to the CUA model
 async function callCUAModel(input: any[], previousResponseId?: string) {
   logger.trace("Sending request body to the model...");
+  const sanitizedInput = sanitizeResponseInput(input);
 
   const requestBody: any = {
     model: configuredModel,
     tools,
-    input,
+    input: sanitizedInput,
     reasoning: {
       effort: "low",
       summary: "auto"
@@ -165,7 +198,11 @@ export async function sendFunctionCallOutput(
   return callCUAModel(input, previousResponseId);
 }
 
-export async function setupCUAModel(systemPrompt: string, userInfo: string) {
+export async function setupCUAModel(
+  systemPrompt: string,
+  userInfo: string,
+  inputFiles: OpenAIResponseInputFile[] = []
+) {
   logger.trace("Setting up CUA model...");
   const input: any[] = [];
 
@@ -186,7 +223,13 @@ export async function setupCUAModel(systemPrompt: string, userInfo: string) {
 
   input.push({
     role: "user",
-    content: `INSTRUCTIONS:\n${systemPrompt}\n\nUSER INFO:\n${userInfo}`,
+    content: [
+      {
+        type: "input_text",
+        text: `INSTRUCTIONS:\n${systemPrompt}\n\nUSER INFO:\n${userInfo}`,
+      },
+      ...inputFiles,
+    ],
   });
 
   return callCUAModel(input);

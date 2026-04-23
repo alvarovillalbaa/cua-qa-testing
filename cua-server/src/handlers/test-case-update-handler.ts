@@ -6,6 +6,7 @@ const TERMINAL_STATUSES = new Set(["pass", "fail"]);
 export async function testCaseUpdateHandler(socket: Socket, status: string): Promise<void> {
   logger.debug(`Received testCaseUpdate with status: ${status}`)
   const testCaseReviewAgent = socket.data.testCaseReviewAgent;
+  const runRecorder = socket.data.runRecorder;
   const nextStatus = status.toLowerCase() === "failed" ? "fail" : status.toLowerCase();
   const currentStatus = (socket.data.testCaseStatus || "pending").toLowerCase();
 
@@ -36,6 +37,13 @@ export async function testCaseUpdateHandler(socket: Socket, status: string): Pro
       });
       testCaseReviewAgent.finalizeRun("fail");
     }
+    if (runRecorder) {
+      runRecorder.setRunStatus("fail", "Frontend reported a failed test case status.");
+      runRecorder.finalizeReviewStateOnFailure(
+        "Frontend reported a failed test case status."
+      );
+      runRecorder.emitSnapshot(socket);
+    }
 
   }
 
@@ -49,6 +57,10 @@ export async function testCaseUpdateHandler(socket: Socket, status: string): Pro
         status: "pass",
       });
       testCaseReviewAgent.finalizeRun("pass");
+    }
+    if (runRecorder) {
+      runRecorder.setRunStatus("pass");
+      runRecorder.emitSnapshot(socket);
     }
     
   }

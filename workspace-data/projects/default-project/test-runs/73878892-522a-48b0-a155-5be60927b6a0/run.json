@@ -1,0 +1,305 @@
+{
+  "schema_version": "1.0",
+  "run_id": "73878892-522a-48b0-a155-5be60927b6a0",
+  "project_id": "default-project",
+  "test_case_id": "default-test-case",
+  "trigger": "Manual trigger from localhost:3000",
+  "started_at": "2026-04-23T15:13:15.860Z",
+  "finished_at": "2026-04-23T15:14:04.385Z",
+  "status": "fail",
+  "error_info": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+  "current_action": null,
+  "evaluators": [
+    {
+      "id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "name": "Primary evaluator",
+      "status": "fail",
+      "verdict": "fail",
+      "score": 0,
+      "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+      "evidence": {
+        "transcript_turns": 284,
+        "current_action": null
+      }
+    }
+  ],
+  "chat_transcript": "{\n  \"extractor_kind\": \"chat_transcript\",\n  \"source_type\": \"webpage_screenshot\",\n  \"turns\": [\n    {\n      \"speaker\": \"assistant\",\n      \"text\": \"Hello, I'm Ibot! How can I help you?\",\n      \"timestamp\": null,\n      \"visible_metadata\": {\n        \"agent_name\": \"Ibot\"\n      }\n    }\n  ]\n}",
+  "extractor_results": [
+    {
+      "extractorId": "72bd78f7-82c5-4a9d-b70c-b21d3abe896f",
+      "extractorName": "Chat transcript vision",
+      "kind": "chat_transcript",
+      "source": "vision",
+      "confidence": 0.55,
+      "output": "{\n  \"extractor_kind\": \"chat_transcript\",\n  \"source_type\": \"webpage_screenshot\",\n  \"turns\": [\n    {\n      \"speaker\": \"assistant\",\n      \"text\": \"Hello, I'm Ibot! How can I help you?\",\n      \"timestamp\": null,\n      \"visible_metadata\": {\n        \"agent_name\": \"Ibot\"\n      }\n    }\n  ]\n}",
+      "updatedAt": "2026-04-23T15:13:59.395Z"
+    },
+    {
+      "extractorId": "ac95765e-5cce-4645-9b6d-b4d9ada14d29",
+      "extractorName": "Error banners vision",
+      "kind": "ui_entities",
+      "source": "vision",
+      "confidence": 0.55,
+      "output": "{\n  \"extractor_kind\": \"ui_entities\",\n  \"error_states\": []\n}",
+      "updatedAt": "2026-04-23T15:14:01.415Z"
+    }
+  ],
+  "evaluator_results": [
+    {
+      "id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "name": "Primary evaluator",
+      "status": "fail",
+      "verdict": "fail",
+      "score": 0,
+      "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+      "evidence": {
+        "transcript_turns": 284,
+        "current_action": null
+      }
+    }
+  ],
+  "final_output": {
+    "verdict": "fail",
+    "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+    "transcript": "{\n  \"extractor_kind\": \"chat_transcript\",\n  \"source_type\": \"webpage_screenshot\",\n  \"turns\": [\n    {\n      \"speaker\": \"assistant\",\n      \"text\": \"Hello, I'm Ibot! How can I help you?\",\n      \"timestamp\": null,\n      \"visible_metadata\": {\n        \"agent_name\": \"Ibot\"\n      }\n    }\n  ]\n}",
+    "evaluators": [
+      {
+        "id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "name": "Primary evaluator",
+        "status": "fail",
+        "verdict": "fail",
+        "score": 0,
+        "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+        "evidence": {
+          "transcript_turns": 284,
+          "current_action": null
+        }
+      }
+    ],
+    "datasets": [
+      {
+        "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+        "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "sheets": [
+          {
+            "sheetName": "Sheet1",
+            "columns": [
+              "ID",
+              "RAMA",
+              "Resolución",
+              "MOTIVO",
+              "INPUTS (JSON)",
+              "Menú",
+              "Esperado",
+              "Inputs y Outputs (JSON)",
+              "Resultado 1er Intento",
+              "Resultado 2do Intento",
+              "Nombre Tester",
+              "Comentarios testing"
+            ],
+            "sampleRows": [
+              {
+                "ID": 1,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre condiciones y costes de cambio de fecha/hora",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Cómo puedo cambiar la fecha de mi vuelo y qué costes o suplementos podría tener?\"}]",
+                "Menú": "Debe tratarlo como consulta informacional sobre cambio voluntario. No debe activar el flujo transaccional ni pedir PNR + apellido en el primer mensaje.",
+                "Esperado": "Responde en modo RAG con explicación general del proceso, posibles costes/suplementos y pasos de autogestión. Puede invitar a revisar una reserva concreta, pero no debe asumir intención transaccional cerrada.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 2,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre cambio de ruta",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Se puede cambiar el destino de un billete de Iberia o solo la fecha?\"}]",
+                "Menú": "Debe resolverlo como duda informacional y explicar la diferencia entre cambio de ruta y cambio de fecha/hora.",
+                "Esperado": "Explica que el cambio de ruta no es autogestionable en este flujo y responde de forma informacional. No debe pedir PNR ni entrar directamente en la rama agentic.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 3,
+                "RAMA": "Transaccional > Inicio",
+                "Resolución": "Solicita validación de causa médica",
+                "MOTIVO": "Inicio transaccional genérico sin detallar tipo de cambio",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"Quiero cambiar mi vuelo.\"}]",
+                "Menú": "Primer paso del flujo: preguntar si el cambio es por causa médica e incluir recordatorio del formulario médico.",
+                "Esperado": "Pregunta de forma clara si el cambio se debe a una causa médica debidamente justificada. No debe pedir todavía PNR + apellido ni derivar a web/app.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              }
+            ],
+            "rowCount": 53
+          }
+        ]
+      }
+    ],
+    "learning_context": "Autoresearch-derived testing memory:\n- Runtime failure: Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.\n- Failed evaluators: Primary evaluator\n- Runtime failure: Error: 400 Mutually exclusive parameters: 'input[1].content[1]'. Ensure you are only providing one of: 'file_id' or 'filename'.\n- Runtime failure: Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n\n- No transcript turns extracted. Prefer stronger DOM/network selectors.\n- Runtime failure: Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝"
+  },
+  "openai_file_refs": [
+    {
+      "scope": "cua_setup",
+      "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "fileId": "file-EVNy6fsTW1R43kJ8dE2rFa",
+      "mode": "uploaded"
+    },
+    {
+      "scope": "evaluator:d468e51f-bea2-404f-913b-e209392c200b",
+      "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "fileId": "file-XfQqStY9M8BxQpPZAEnbcW",
+      "mode": "uploaded"
+    },
+    {
+      "scope": "final_output",
+      "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "fileId": "file-GWGV6p83g9BhroPD4t57W6",
+      "mode": "uploaded"
+    }
+  ],
+  "captured_data": [],
+  "artifacts": [
+    "/test_results/73878892-522a-48b0-a155-5be60927b6a0/1776957235868-initial.png",
+    "/Users/alvarovillalba/Desktop/cua-qa-testing/workspace-data/projects/default-project/test-runs/73878892-522a-48b0-a155-5be60927b6a0/artifacts/1776957235986-initial.html"
+  ],
+  "step_count": 19,
+  "steps": [
+    {
+      "step_number": 1,
+      "step_instructions": "Open a web browser and navigate to the URL: https://pre.iberia.com",
+      "status": "pass",
+      "step_reasoning": "Successfully navigated to the specified URL.",
+      "image_path": "/test_results/801794b9-4ba3-4d97-b330-2ab44254f9b1/f453a9fe-4c5f-405c-9107-28cc19a284e0.png"
+    },
+    {
+      "step_number": 2,
+      "step_instructions": "Locate the IBot icon positioned in the bottom right corner of the webpage.",
+      "status": "pass",
+      "step_reasoning": "IBot icon located at the bottom right corner of the webpage.",
+      "image_path": "/test_results/801794b9-4ba3-4d97-b330-2ab44254f9b1/f453a9fe-4c5f-405c-9107-28cc19a284e0.png"
+    },
+    {
+      "step_number": 3,
+      "step_instructions": "For Test 40 (Consulta informacional OW), click the pencil icon (top right) to reset the chat before sending the first message.",
+      "status": "fail",
+      "step_reasoning": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false."
+    },
+    {
+      "step_number": 4,
+      "step_instructions": "Send the first attempt message for Test 40: 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?' via the IBot.",
+      "status": "not_run",
+      "step_reasoning": "Sending the initial inquiry message and verifying its transmission."
+    },
+    {
+      "step_number": 5,
+      "step_instructions": "Wait for the IBot's response (expecting around 30 seconds, but up to 90 seconds). Capture the transcript of both the input and output in JSON format.",
+      "status": "not_run",
+      "step_reasoning": "Ensuring the IBot response is received and accurately captured."
+    },
+    {
+      "step_number": 6,
+      "step_instructions": "Evaluate the response from the IBot ensuring that it provides a clear explanation of the available cancellation options and ends by offering to check the reservation specifically.",
+      "status": "not_run",
+      "step_reasoning": "Checking if the response meets specified criteria regarding cancellation options."
+    },
+    {
+      "step_number": 7,
+      "step_instructions": "Click the pencil icon again to reset the chat before the second attempt for Test 40.",
+      "status": "not_run",
+      "step_reasoning": "Resetting the chat for another message attempt."
+    },
+    {
+      "step_number": 8,
+      "step_instructions": "Send the second attempt message for Test 40: 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?' and capture both input and output transcripts.",
+      "status": "not_run",
+      "step_reasoning": "Sending the second attempt message and capturing transcripts."
+    },
+    {
+      "step_number": 9,
+      "step_instructions": "Evaluate the second response from the IBot and compare it against expected behavior (clear explanation with empathetic tone, and request for reservation details if needed).",
+      "status": "not_run",
+      "step_reasoning": "Comparing second response against expected behavior."
+    },
+    {
+      "step_number": 10,
+      "step_instructions": "Reset the chat by clicking the pencil icon for Test 41.",
+      "status": "not_run",
+      "step_reasoning": "Preparing chat for new test message (Test 41)."
+    },
+    {
+      "step_number": 11,
+      "step_instructions": "Send the first attempt message for Test 41: '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?' via the IBot and capture the transcript (both input and output in JSON).",
+      "status": "not_run",
+      "step_reasoning": "Capturing transcription for first message attempt in Test 41."
+    },
+    {
+      "step_number": 12,
+      "step_instructions": "Evaluate the response ensuring the IBot provides the general information regarding assistance/compensation and asks if further help with the reservation is needed.",
+      "status": "not_run",
+      "step_reasoning": "Evaluating response for completeness regarding assistance information."
+    },
+    {
+      "step_number": 13,
+      "step_instructions": "Reset the chat by clicking the pencil icon then send the second attempt message for Test 41 (same message as attempt 1) and capture the transcript.",
+      "status": "not_run",
+      "step_reasoning": "Resetting chat for consistent response checking."
+    },
+    {
+      "step_number": 14,
+      "step_instructions": "Evaluate the second response for Test 41 to ensure consistency with the expected help info and appropriate closure as per the test scenario.",
+      "status": "not_run",
+      "step_reasoning": "Ensuring second response consistency and closure appropriateness."
+    },
+    {
+      "step_number": 15,
+      "step_instructions": "Reset the chat by clicking the pencil icon for Test 42.",
+      "status": "not_run",
+      "step_reasoning": "Chat reset for Test 42 preparation."
+    },
+    {
+      "step_number": 16,
+      "step_instructions": "Send the first attempt message for Test 42: 'Acepto el otro vuelo, hacédmelo ya.' and capture the full transcript of input and output.",
+      "status": "not_run",
+      "step_reasoning": "Capturing transcript for initial message in Test 42."
+    },
+    {
+      "step_number": 17,
+      "step_instructions": "Evaluate the IBot response for Test 42, verifying that the bot first requests the PNR and the passenger's surname (maintaining an empathetic tone) before any further action.",
+      "status": "not_run",
+      "step_reasoning": "Verifying response requests relevant information (PNR, surname)."
+    },
+    {
+      "step_number": 18,
+      "step_instructions": "Reset the chat using the pencil icon again and send the second attempt message for Test 42: 'Acepto el otro vuelo, hacédmelo ya.' Capture the transcript of the interaction.",
+      "status": "not_run",
+      "step_reasoning": "Ensuring second message consistency and transcript capture."
+    },
+    {
+      "step_number": 19,
+      "step_instructions": "Evaluate the second response for Test 42 ensuring it consistently requests PNR and surname, and that no direct action (como abrir la web) is taken until the reservation is validated. Finally, store all transcripts, including Inputs and Outputs (JSON), first and second attempt results, and any testing comments.",
+      "status": "not_run",
+      "step_reasoning": "Evaluating final response ensuring compliance, and documenting results."
+    }
+  ]
+}

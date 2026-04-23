@@ -1,0 +1,187 @@
+{
+  "run_id": "73878892-522a-48b0-a155-5be60927b6a0",
+  "status": "fail",
+  "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+  "structured_results": {
+    "transcript": "{\n  \"extractor_kind\": \"chat_transcript\",\n  \"source_type\": \"webpage_screenshot\",\n  \"turns\": [\n    {\n      \"speaker\": \"assistant\",\n      \"text\": \"Hello, I'm Ibot! How can I help you?\",\n      \"timestamp\": null,\n      \"visible_metadata\": {\n        \"agent_name\": \"Ibot\"\n      }\n    }\n  ]\n}",
+    "captured_data": [],
+    "evaluators": [
+      {
+        "id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "name": "Primary evaluator",
+        "status": "fail",
+        "verdict": "fail",
+        "score": 0,
+        "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+        "evidence": {
+          "transcript_turns": 284,
+          "current_action": null
+        }
+      }
+    ],
+    "final_output": {
+      "verdict": "fail",
+      "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+      "transcript": "{\n  \"extractor_kind\": \"chat_transcript\",\n  \"source_type\": \"webpage_screenshot\",\n  \"turns\": [\n    {\n      \"speaker\": \"assistant\",\n      \"text\": \"Hello, I'm Ibot! How can I help you?\",\n      \"timestamp\": null,\n      \"visible_metadata\": {\n        \"agent_name\": \"Ibot\"\n      }\n    }\n  ]\n}",
+      "evaluators": [
+        {
+          "id": "d468e51f-bea2-404f-913b-e209392c200b",
+          "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+          "name": "Primary evaluator",
+          "status": "fail",
+          "verdict": "fail",
+          "score": 0,
+          "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+          "evidence": {
+            "transcript_turns": 284,
+            "current_action": null
+          }
+        }
+      ],
+      "datasets": [
+        {
+          "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+          "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+          "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+          "sheets": [
+            {
+              "sheetName": "Sheet1",
+              "columns": [
+                "ID",
+                "RAMA",
+                "Resolución",
+                "MOTIVO",
+                "INPUTS (JSON)",
+                "Menú",
+                "Esperado",
+                "Inputs y Outputs (JSON)",
+                "Resultado 1er Intento",
+                "Resultado 2do Intento",
+                "Nombre Tester",
+                "Comentarios testing"
+              ],
+              "sampleRows": [
+                {
+                  "ID": 1,
+                  "RAMA": "Informacional > RAG",
+                  "Resolución": "RAG informacional",
+                  "MOTIVO": "Consulta general sobre condiciones y costes de cambio de fecha/hora",
+                  "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Cómo puedo cambiar la fecha de mi vuelo y qué costes o suplementos podría tener?\"}]",
+                  "Menú": "Debe tratarlo como consulta informacional sobre cambio voluntario. No debe activar el flujo transaccional ni pedir PNR + apellido en el primer mensaje.",
+                  "Esperado": "Responde en modo RAG con explicación general del proceso, posibles costes/suplementos y pasos de autogestión. Puede invitar a revisar una reserva concreta, pero no debe asumir intención transaccional cerrada.",
+                  "Inputs y Outputs (JSON)": "",
+                  "Resultado 1er Intento": "",
+                  "Resultado 2do Intento": "",
+                  "Nombre Tester": "",
+                  "Comentarios testing": ""
+                },
+                {
+                  "ID": 2,
+                  "RAMA": "Informacional > RAG",
+                  "Resolución": "RAG informacional",
+                  "MOTIVO": "Consulta general sobre cambio de ruta",
+                  "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Se puede cambiar el destino de un billete de Iberia o solo la fecha?\"}]",
+                  "Menú": "Debe resolverlo como duda informacional y explicar la diferencia entre cambio de ruta y cambio de fecha/hora.",
+                  "Esperado": "Explica que el cambio de ruta no es autogestionable en este flujo y responde de forma informacional. No debe pedir PNR ni entrar directamente en la rama agentic.",
+                  "Inputs y Outputs (JSON)": "",
+                  "Resultado 1er Intento": "",
+                  "Resultado 2do Intento": "",
+                  "Nombre Tester": "",
+                  "Comentarios testing": ""
+                },
+                {
+                  "ID": 3,
+                  "RAMA": "Transaccional > Inicio",
+                  "Resolución": "Solicita validación de causa médica",
+                  "MOTIVO": "Inicio transaccional genérico sin detallar tipo de cambio",
+                  "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"Quiero cambiar mi vuelo.\"}]",
+                  "Menú": "Primer paso del flujo: preguntar si el cambio es por causa médica e incluir recordatorio del formulario médico.",
+                  "Esperado": "Pregunta de forma clara si el cambio se debe a una causa médica debidamente justificada. No debe pedir todavía PNR + apellido ni derivar a web/app.",
+                  "Inputs y Outputs (JSON)": "",
+                  "Resultado 1er Intento": "",
+                  "Resultado 2do Intento": "",
+                  "Nombre Tester": "",
+                  "Comentarios testing": ""
+                }
+              ],
+              "rowCount": 53
+            }
+          ]
+        }
+      ],
+      "learning_context": "Autoresearch-derived testing memory:\n- Runtime failure: Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.\n- Failed evaluators: Primary evaluator\n- Runtime failure: Error: 400 Mutually exclusive parameters: 'input[1].content[1]'. Ensure you are only providing one of: 'file_id' or 'filename'.\n- Runtime failure: Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n\n- No transcript turns extracted. Prefer stronger DOM/network selectors.\n- Runtime failure: Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝"
+    },
+    "datasets": [
+      {
+        "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+        "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "sheets": [
+          {
+            "sheetName": "Sheet1",
+            "columns": [
+              "ID",
+              "RAMA",
+              "Resolución",
+              "MOTIVO",
+              "INPUTS (JSON)",
+              "Menú",
+              "Esperado",
+              "Inputs y Outputs (JSON)",
+              "Resultado 1er Intento",
+              "Resultado 2do Intento",
+              "Nombre Tester",
+              "Comentarios testing"
+            ],
+            "sampleRows": [
+              {
+                "ID": 1,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre condiciones y costes de cambio de fecha/hora",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Cómo puedo cambiar la fecha de mi vuelo y qué costes o suplementos podría tener?\"}]",
+                "Menú": "Debe tratarlo como consulta informacional sobre cambio voluntario. No debe activar el flujo transaccional ni pedir PNR + apellido en el primer mensaje.",
+                "Esperado": "Responde en modo RAG con explicación general del proceso, posibles costes/suplementos y pasos de autogestión. Puede invitar a revisar una reserva concreta, pero no debe asumir intención transaccional cerrada.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 2,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre cambio de ruta",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Se puede cambiar el destino de un billete de Iberia o solo la fecha?\"}]",
+                "Menú": "Debe resolverlo como duda informacional y explicar la diferencia entre cambio de ruta y cambio de fecha/hora.",
+                "Esperado": "Explica que el cambio de ruta no es autogestionable en este flujo y responde de forma informacional. No debe pedir PNR ni entrar directamente en la rama agentic.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 3,
+                "RAMA": "Transaccional > Inicio",
+                "Resolución": "Solicita validación de causa médica",
+                "MOTIVO": "Inicio transaccional genérico sin detallar tipo de cambio",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"Quiero cambiar mi vuelo.\"}]",
+                "Menú": "Primer paso del flujo: preguntar si el cambio es por causa médica e incluir recordatorio del formulario médico.",
+                "Esperado": "Pregunta de forma clara si el cambio se debe a una causa médica debidamente justificada. No debe pedir todavía PNR + apellido ni derivar a web/app.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              }
+            ],
+            "rowCount": 53
+          }
+        ]
+      }
+    ]
+  }
+}

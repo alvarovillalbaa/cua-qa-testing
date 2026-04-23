@@ -1,17 +1,9 @@
 // /stores/useConversationStore.ts
 import { create } from "zustand";
 import { MessageItem } from "@/lib/assistant";
+import type { RunStepSnapshot } from "@/lib/workspace-types";
   
 /* ───── Types ──────────────────────────────────────────────── */
-export type Step = {
-  step_number: number;
-  status: string;
-  step_reasoning?: string;
-  image_path?: string;
-};
-
-
-
 interface ConversationState {
   /* Chat  */
   chatMessages: MessageItem[];
@@ -22,9 +14,9 @@ interface ConversationState {
   addConversationItem: (item: any) => void;
 
   /* Test‑case steps coming from the backend  */
-  testCases: Step[];
-  setTestCases: (steps: Step[]) => void;
-  updateTestScript: (steps: Step[]) => void;
+  testCases: RunStepSnapshot[];
+  setTestCases: (steps: RunStepSnapshot[]) => void;
+  updateTestScript: (steps: RunStepSnapshot[]) => void;
 }
 
 export const useConversationStore = create<ConversationState>()(

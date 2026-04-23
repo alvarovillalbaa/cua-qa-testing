@@ -1,0 +1,261 @@
+{
+  "schema_version": "1.0",
+  "run_id": "ba6da2e3-4cf1-4d7d-8a57-4816d0d948b4",
+  "project_id": "default-project",
+  "test_case_id": "default-test-case",
+  "trigger": "Manual trigger from localhost:3000",
+  "started_at": "2026-04-23T11:42:15.915Z",
+  "finished_at": "2026-04-23T11:42:40.119Z",
+  "status": "fail",
+  "error_info": "Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+  "current_action": null,
+  "evaluators": [
+    {
+      "id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "name": "Primary evaluator",
+      "status": "fail",
+      "verdict": "fail",
+      "score": 0,
+      "summary": "Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+      "evidence": {
+        "transcript_turns": 0,
+        "current_action": null
+      }
+    }
+  ],
+  "chat_transcript": [],
+  "extractor_results": [],
+  "evaluator_results": [
+    {
+      "id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "name": "Primary evaluator",
+      "status": "fail",
+      "verdict": "fail",
+      "score": 0,
+      "summary": "Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+      "evidence": {
+        "transcript_turns": 0,
+        "current_action": null
+      }
+    }
+  ],
+  "final_output": {
+    "verdict": "fail",
+    "summary": "Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "transcript": [],
+    "evaluators": [
+      {
+        "id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "name": "Primary evaluator",
+        "status": "fail",
+        "verdict": "fail",
+        "score": 0,
+        "summary": "Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+        "evidence": {
+          "transcript_turns": 0,
+          "current_action": null
+        }
+      }
+    ],
+    "datasets": [
+      {
+        "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+        "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "sheets": [
+          {
+            "sheetName": "Sheet1",
+            "columns": [
+              "ID",
+              "RAMA",
+              "Resolución",
+              "MOTIVO",
+              "INPUTS (JSON)",
+              "Menú",
+              "Esperado",
+              "Inputs y Outputs (JSON)",
+              "Resultado 1er Intento",
+              "Resultado 2do Intento",
+              "Nombre Tester",
+              "Comentarios testing"
+            ],
+            "sampleRows": [
+              {
+                "ID": 1,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre condiciones y costes de cambio de fecha/hora",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Cómo puedo cambiar la fecha de mi vuelo y qué costes o suplementos podría tener?\"}]",
+                "Menú": "Debe tratarlo como consulta informacional sobre cambio voluntario. No debe activar el flujo transaccional ni pedir PNR + apellido en el primer mensaje.",
+                "Esperado": "Responde en modo RAG con explicación general del proceso, posibles costes/suplementos y pasos de autogestión. Puede invitar a revisar una reserva concreta, pero no debe asumir intención transaccional cerrada.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 2,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre cambio de ruta",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Se puede cambiar el destino de un billete de Iberia o solo la fecha?\"}]",
+                "Menú": "Debe resolverlo como duda informacional y explicar la diferencia entre cambio de ruta y cambio de fecha/hora.",
+                "Esperado": "Explica que el cambio de ruta no es autogestionable en este flujo y responde de forma informacional. No debe pedir PNR ni entrar directamente en la rama agentic.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 3,
+                "RAMA": "Transaccional > Inicio",
+                "Resolución": "Solicita validación de causa médica",
+                "MOTIVO": "Inicio transaccional genérico sin detallar tipo de cambio",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"Quiero cambiar mi vuelo.\"}]",
+                "Menú": "Primer paso del flujo: preguntar si el cambio es por causa médica e incluir recordatorio del formulario médico.",
+                "Esperado": "Pregunta de forma clara si el cambio se debe a una causa médica debidamente justificada. No debe pedir todavía PNR + apellido ni derivar a web/app.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              }
+            ],
+            "rowCount": 53
+          }
+        ]
+      }
+    ],
+    "learning_context": "Autoresearch-derived testing memory:\n- Runtime failure: Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝\n- No transcript turns extracted. Prefer stronger DOM/network selectors.\n- Failed evaluators: Primary evaluator"
+  },
+  "openai_file_refs": [
+    {
+      "scope": "evaluator:d468e51f-bea2-404f-913b-e209392c200b",
+      "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "fileId": "file-EArHcXZLruaeG8y12EihE8",
+      "mode": "uploaded"
+    },
+    {
+      "scope": "final_output",
+      "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "fileId": "file-LfuWuaUcq589pFMsYLN8VV",
+      "mode": "uploaded"
+    }
+  ],
+  "captured_data": [],
+  "artifacts": [],
+  "step_count": 17,
+  "steps": [
+    {
+      "step_number": 1,
+      "step_instructions": "Open the browser and navigate to the login URL: https://pre.iberia.com.",
+      "status": "fail",
+      "step_reasoning": "Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝"
+    },
+    {
+      "step_number": 2,
+      "step_instructions": "Enter username and password.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 3,
+      "step_instructions": "Click the 'Log In' button and verify successful sign‑in.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 4,
+      "step_instructions": "Locate the IBot chatbot in the bottom right corner of the Iberia QA Workspace.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 5,
+      "step_instructions": "Reset the chat by clicking the pencil icon in the top right corner to ensure a fresh session before sending any messages.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 6,
+      "step_instructions": "For Test 40 (1st Attempt): Send the message 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?' via IBot.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 7,
+      "step_instructions": "Wait up to 90 seconds for IBot's response. If the message 'Preparando tu mensaje' appears, continue waiting until a valid response or error occurs, then capture the exact input and output transcript in JSON.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 8,
+      "step_instructions": "Evaluate the captured transcript from Test 40 (1st Attempt) to verify that IBot provides an empathetic explanation with general options for cancellation and ends by asking if the user wants the reservation reviewed (expected response: 'Sí, revísame la reserva').",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 9,
+      "step_instructions": "Reset the chat by clicking the pencil icon, then resend the same message for Test 40 (2nd Attempt) to capture a second transcript.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 10,
+      "step_instructions": "Wait for the response (up to 90 seconds) and capture the exact input and output transcript. Evaluate the second attempt to ensure consistency with the expected flow.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 11,
+      "step_instructions": "For Test 41 (1st Attempt): Reset the chat and send the message '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?' via IBot.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 12,
+      "step_instructions": "Wait for up to 90 seconds to capture the transcript. Verify that IBot responds with an informational message regarding assistance/compensation and then closes the conversation properly (expected to simply respond without activating a transaccional flow, e.g., with 'No, gracias').",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 13,
+      "step_instructions": "Reset the chat and resend the same message for Test 41 (2nd Attempt), capture the transcript and evaluate that the behavior remains consistent.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 14,
+      "step_instructions": "For Test 42 (1st Attempt): Reset the chat and send the message 'Acepto el otro vuelo, hacédmelo ya.' via IBot.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 15,
+      "step_instructions": "Wait up to 90 seconds for IBot's response. Verify that IBot asks for the PNR and apellido in an empathetic tone before any further management, and capture the transcript exactly.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 16,
+      "step_instructions": "Reset the chat, then resend the same message for Test 42 (2nd Attempt) to capture a second transcript. Evaluate that IBot again requests PNR and apellido correctly.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 17,
+      "step_instructions": "Store all captured transcripts (inputs and outputs in JSON) for later CSV population including details: 'Inputs y Outputs (JSON)', 'Resultado 1er intento', 'Resultado 2do intento', and 'Comentarios testing'.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    }
+  ]
+}

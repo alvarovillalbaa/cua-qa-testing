@@ -1,0 +1,13 @@
+{
+  "id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "name": "Primary evaluator",
+  "status": "fail",
+  "verdict": "fail",
+  "score": 0,
+  "summary": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+  "evidence": {
+    "transcript_turns": 0,
+    "current_action": null
+  }
+}

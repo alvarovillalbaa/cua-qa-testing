@@ -1,0 +1,23 @@
+{
+  "trigger": "Manual trigger from localhost:3000",
+  "loginRequired": false,
+  "website": "https://pre.iberia.com",
+  "additionalContextOverride": "",
+  "headers": [
+    {
+      "id": "0e5adada-3d39-47bf-89af-eac33ac96f0d",
+      "name": "x-extra-header",
+      "value": "",
+      "secret": true
+    }
+  ],
+  "username": "test_user_name",
+  "password": "test_password",
+  "userInfo": {
+    "name": "Cua Blossom",
+    "email": "cua@example.com",
+    "address": "123 Main St, Anytown, USA"
+  },
+  "outputInstructions": "Render the structured output in the UI and make it available for file generation.",
+  "uploadedAssetIds": []
+}

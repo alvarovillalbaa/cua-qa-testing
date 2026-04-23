@@ -1,0 +1,99 @@
+{
+  "id": "default-test-case",
+  "name": "Iberia chatbot evaluator",
+  "teamCollaboration": "Team collaboration is persisted in the repo-backed workspace files and reused across runs.",
+  "metrics": [
+    {
+      "id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "name": "Primary evaluator",
+      "description": "Default evaluator derived from the test description when no explicit metrics are configured.",
+      "systemPrompt": "Evaluate the run using the test description, the captured evidence, and the configured thresholds. Return a structured pass/fail decision with rationale.",
+      "enabled": true
+    }
+  ],
+  "thresholds": [
+    {
+      "id": "157e584e-950f-48ff-9535-b0afd8431b10",
+      "metricId": "d468e51f-bea2-404f-913b-e209392c200b",
+      "operator": "contains",
+      "value": "pass"
+    }
+  ],
+  "messages": {
+    "system": [
+      {
+        "id": "992949d2-2fab-4c06-ac20-21c18c881dde",
+        "role": "system",
+        "content": "Use the resolved run config, the evidence bundle, and the per-metric instructions to produce structured evaluator results.",
+        "variables": [
+          "test_description",
+          "metric_name",
+          "spl"
+        ]
+      }
+    ],
+    "user": [
+      {
+        "id": "1fd462fc-65f8-4e50-8194-c3490afe6c43",
+        "role": "user",
+        "content": "Run the configured evaluation against {{website}} and return the requested output schema using the persisted evidence.",
+        "variables": [
+          "website",
+          "response_format",
+          "personalization"
+        ]
+      }
+    ]
+  },
+  "extractors": [
+    {
+      "id": "72bd78f7-82c5-4a9d-b70c-b21d3abe896f",
+      "name": "Chat transcript",
+      "kind": "chat_transcript",
+      "enabled": true,
+      "sourcePriority": [
+        "dom",
+        "events",
+        "vision"
+      ],
+      "selectors": [
+        "[role='log']",
+        "[data-testid*='chat']",
+        ".ibot-message",
+        "textarea",
+        "[contenteditable='true']"
+      ],
+      "schemaPrompt": "Extract exact user/assistant turns with timestamps and visible metadata."
+    },
+    {
+      "id": "ac95765e-5cce-4645-9b6d-b4d9ada14d29",
+      "name": "Error banners",
+      "kind": "ui_entities",
+      "enabled": true,
+      "sourcePriority": [
+        "dom",
+        "vision"
+      ],
+      "selectors": [
+        ".alert",
+        "[role='alert']",
+        ".error",
+        ".toast"
+      ],
+      "schemaPrompt": "Extract visible error states and preserve exact text when available."
+    }
+  ],
+  "output": {
+    "fileTargets": []
+  },
+  "assets": [
+    {
+      "id": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "mimeType": "text/csv",
+      "size": 47637,
+      "uploadedAt": "2026-04-23T11:42:10.412Z"
+    }
+  ]
+}

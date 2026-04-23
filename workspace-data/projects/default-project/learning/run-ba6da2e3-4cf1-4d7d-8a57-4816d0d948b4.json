@@ -1,0 +1,10 @@
+{
+  "lastUpdated": "2026-04-23T11:42:41.679Z",
+  "patterns": [
+    "Runtime failure: Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "No transcript turns extracted. Prefer stronger DOM/network selectors.",
+    "Failed evaluators: Primary evaluator"
+  ],
+  "transcriptTurns": 0,
+  "status": "fail"
+}

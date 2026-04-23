@@ -1,0 +1,1 @@
+Given the persisted run artifacts, produce the final structured output requested by the user. Prefer exact facts and annotate assumptions clearly.

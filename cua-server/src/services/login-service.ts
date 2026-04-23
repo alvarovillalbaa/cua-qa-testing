@@ -33,7 +33,7 @@ export class LoginService {
       logger.debug("Login credentials filled in.");
       return true;
     } catch (error) {
-      logger.error("❌ Error filling login credentials:", error);
+      logger.error({ error }, "Error filling login credentials");
       return false;
     }
   }
@@ -60,7 +60,7 @@ export class LoginService {
       logger.debug("Login successful – navigation finished.");
       return true;
     } catch (error) {
-      logger.error("❌ Error clicking login button:", error);
+      logger.error({ error }, "Error clicking login button");
       return false;
     }
   }

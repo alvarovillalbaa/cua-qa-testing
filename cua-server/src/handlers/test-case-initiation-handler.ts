@@ -4,6 +4,91 @@ import TestCaseAgent from "../agents/test-case-agent";
 import { convertTestCaseToSteps, TestCase } from "../utils/testCaseUtils";
 import { cuaLoopHandler } from "./cua-loop-handler";
 import TestScriptReviewAgent from "../agents/test-script-review-agent";
+import RunRecorder from "../lib/run-recorder";
+import { WorkspaceDocument } from "../lib/workspace-types";
+import { loadLearningContext } from "../learning/learning-loop";
+
+function buildExecutionBrief(
+  workspace: WorkspaceDocument,
+  learningContext: { autoSpl: string; topPatterns: string[] }
+) {
+  const metrics =
+    workspace.testCase.metrics.length > 0
+      ? workspace.testCase.metrics
+          .filter((metric) => metric.enabled)
+          .map(
+            (metric) =>
+              `- ${metric.name}: ${metric.description}\n  System prompt: ${metric.systemPrompt}`
+          )
+          .join("\n")
+      : "- Default evaluator derived from the test description";
+
+  const thresholds =
+    workspace.testCase.thresholds.length > 0
+      ? workspace.testCase.thresholds
+          .map(
+            (threshold) =>
+              `- ${threshold.metricId} ${threshold.operator} ${threshold.value}`
+          )
+          .join("\n")
+      : "- No explicit thresholds configured";
+
+  const assets =
+    workspace.testCase.assets.length > 0
+      ? workspace.testCase.assets
+          .map((asset) => `- ${asset.name} (${asset.relativePath})`)
+          .join("\n")
+      : "- No uploaded assets";
+
+  return [
+    `Project: ${workspace.project.name}`,
+    `Website: ${workspace.runDefaults.website}`,
+    `Trigger: ${workspace.runDefaults.trigger}`,
+    `Test case: ${workspace.testCase.name}`,
+    "",
+    "Test description:",
+    workspace.testCase.testDescription,
+    "",
+    "Team collaboration notes:",
+    workspace.testCase.teamCollaboration,
+    "",
+    "Additional context:",
+    workspace.runDefaults.additionalContextOverride ||
+      workspace.testCase.additionalContext,
+    "",
+    "Metrics:",
+    metrics,
+    "",
+    "Thresholds:",
+    thresholds,
+    "",
+    "Assets:",
+    assets,
+    "",
+    "Shared system prompt:",
+    workspace.testCase.prompts.shared,
+    "",
+    "Persisted learning / SPL auto-memory:",
+    learningContext.autoSpl || workspace.testCase.prompts.spl,
+    "",
+    "Top repeated patterns from prior runs:",
+    learningContext.topPatterns.join("\n") || "- None yet",
+    "",
+    "Login overlay prompt:",
+    workspace.testCase.prompts.loginOverlay,
+    "",
+    "Output response format:",
+    workspace.testCase.output.responseFormat,
+    "",
+    "Output instructions:",
+    workspace.runDefaults.outputInstructions,
+    "",
+    `Login required: ${workspace.runDefaults.loginRequired ? "yes" : "no"}`,
+    `Site access mode: ${workspace.secrets.siteAccessMode || "none"}`,
+    `Site access origin: ${workspace.secrets.siteAccessOrigin || workspace.runDefaults.website}`,
+    `User info: ${JSON.stringify(workspace.runDefaults.userInfo)}`,
+  ].join("\n");
+}
 
 export async function handleTestCaseInitiated(
   socket: Socket,
@@ -11,32 +96,31 @@ export async function handleTestCaseInitiated(
 ): Promise<void> {
   logger.debug(`Received testCaseInitiated with data: ${JSON.stringify(data)}`);
   try {
-    const { testCase, url, userName, password, userInfo } = data as {
-      testCase: string;
-      url: string;
-      userName: string;
-      password: string;
-      userInfo: string;
-      loginRequired?: boolean;
+    const { workspace } = data as {
+      workspace: WorkspaceDocument;
     };
-    const loginRequired = data.loginRequired ?? true;
-
-    logger.debug(`Login required: ${loginRequired}`);
+    const loginRequired = workspace.runDefaults.loginRequired;
+    const url = workspace.runDefaults.website;
+    const userName = workspace.runDefaults.username;
+    const password = workspace.runDefaults.password;
+    const userInfo = JSON.stringify(workspace.runDefaults.userInfo);
 
     socket.emit(
       "message",
-      "Received test case - working on creating test script..."
+      "Received saved workspace - generating executable steps..."
     );
 
-    // Create system prompt by combining form inputs.
-    const msg = `${testCase} URL: ${url} User Name: ${userName} Password: *********\n USER INFO:\n${userInfo}`;
-
     const testCaseAgent = new TestCaseAgent(loginRequired);
+    const learningContext = loadLearningContext(workspace.project.id);
+    const executionBrief = buildExecutionBrief(workspace, learningContext);
+    const runRecorder = new RunRecorder(workspace);
+    socket.data.runRecorder = runRecorder;
+    socket.data.testCaseStatus = "running";
+    runRecorder.emitSnapshot(socket);
 
-    const testCaseResponse = await testCaseAgent.invokeResponseAPI(msg);
+    const testCaseResponse = await testCaseAgent.invokeResponseAPI(executionBrief);
     const testCaseJson = JSON.stringify(testCaseResponse);
 
-    // Create a new test case review agent.
     const testCaseReviewAgent = new TestScriptReviewAgent();
 
     logger.debug(
@@ -56,10 +140,16 @@ export async function handleTestCaseInitiated(
       )}`
     );
 
-    socket.emit("message", "Test script review agent intiatlized.");
+    socket.emit("message", "Test script review agent initialized.");
 
-    // Set the test case review agent in the socket.
     socket.data.testCaseReviewAgent = testCaseReviewAgent;
+    runRecorder.initializeSteps(
+      (testCaseResponse as TestCase).steps.map((step) => ({
+        step_number: step.step_number,
+        step_instructions: step.step_instructions,
+      }))
+    );
+    runRecorder.emitSnapshot(socket);
 
     logger.debug(`Cleaned test case: ${testCaseJson}`);
 
@@ -77,10 +167,12 @@ export async function handleTestCaseInitiated(
       url,
       socket,
       testCaseReviewAgent,
+      runRecorder,
       userName,
       password,
       loginRequired,
-      userInfo
+      userInfo,
+      workspace
     );
   } catch (error) {
     logger.error(`Error in handleTestCaseInitiated: ${error}`);

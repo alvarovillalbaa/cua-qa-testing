@@ -1,0 +1,18 @@
+[
+  {
+    "scope": "evaluator:d468e51f-bea2-404f-913b-e209392c200b",
+    "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+    "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+    "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+    "fileId": "file-ND15Tae5iTCdFdniMJdG1L",
+    "mode": "uploaded"
+  },
+  {
+    "scope": "final_output",
+    "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+    "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+    "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+    "fileId": "file-36YSFjKyTor64cG1giw5fw",
+    "mode": "uploaded"
+  }
+]

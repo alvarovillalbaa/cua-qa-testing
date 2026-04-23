@@ -1,0 +1,13 @@
+{
+  "id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "name": "Primary evaluator",
+  "status": "fail",
+  "verdict": "fail",
+  "score": 0,
+  "summary": "Error: 400 Invalid schema for function 'capture_data': In context=('properties', 'payload'), 'additionalProperties' is required to be supplied and to be false.",
+  "evidence": {
+    "transcript_turns": 284,
+    "current_action": null
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "runId": "a96e9cfd-3708-41ca-987e-3c58e89b92a7",
+  "projectId": "default-project",
+  "testCaseId": "default-test-case",
+  "status": "fail",
+  "startedAt": "2026-04-23T14:16:12.175Z",
+  "finishedAt": "2026-04-23T14:16:40.916Z",
+  "errorInfo": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+  "currentAction": null,
+  "steps": [
+    {
+      "step_number": 1,
+      "step_instructions": "Open the browser and navigate to the login URL: https://pre.iberia.com.",
+      "status": "fail",
+      "step_reasoning": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "step_number": 2,
+      "step_instructions": "Enter username 'Cua Blossom' and password (use secure credentials).",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 3,
+      "step_instructions": "Click the 'Log In' button and verify successful sign‑in.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 4,
+      "step_instructions": "On the home page, locate the IBot (Iberia chatbot) in the bottom right corner of the website.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 5,
+      "step_instructions": "For Test 40 (1st Attempt): Reset the chat by clicking the pencil icon in the upper right (or reload the page if needed). Then send the message 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?'. Wait at least 30 seconds, and up to 90 seconds, for the response. Capture the exact transcript (Inputs and Outputs JSON) along with the result of the first attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 6,
+      "step_instructions": "For Test 40 (2nd Attempt): If the response was unsatisfactory or errors occurred, reset the chat using the pencil icon, and resend the same message 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?'. Wait for the response and capture the transcript (Inputs and Outputs JSON) along with the result of the second attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 7,
+      "step_instructions": "For Test 41 (1st Attempt): Reset the chat as before, then send the message '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?'. Wait for the response (30-90 seconds), and capture the transcript (Inputs and Outputs JSON) along with the result of the first attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 8,
+      "step_instructions": "For Test 41 (2nd Attempt): Reset the chat again, resend the message '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?'. Wait for the response and capture the transcript (Inputs and Outputs JSON) along with the result of the second attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 9,
+      "step_instructions": "For Test 42 (1st Attempt): Reset the chat using the pencil icon and send the message 'Acepto el otro vuelo, hacédmelo ya.'. Wait 30-90 seconds for the response. Capture the transcript (Inputs and Outputs JSON) and note that the IBot should first request PNR + apellido before any further processing.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 10,
+      "step_instructions": "For Test 42 (2nd Attempt): If the first attempt did not work as expected, reset the chat and resend 'Acepto el otro vuelo, hacédmelo ya.' again. Wait for the response and capture the transcript (Inputs and Outputs JSON) along with the result of the second attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 11,
+      "step_instructions": "After completing the tests, compile and store all captured transcripts (exact Inputs and Outputs in JSON), along with the results of both attempts (Resultado 1er intento, Resultado 2do intento) and any additional testing comments ('Comentarios testing').",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    }
+  ]
+}

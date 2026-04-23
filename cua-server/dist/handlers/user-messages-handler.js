@@ -13,6 +13,7 @@ async function handleSocketMessage(socket, msg) {
     const page = socket.data.page;
     const previousResponseId = socket.data.previousResponseId;
     const testCaseReviewAgent = socket.data.testCaseReviewAgent;
+    const runRecorder = socket.data.runRecorder;
     const screenshot = await page.screenshot();
     const screenshotBase64 = screenshot.toString("base64");
     const lastCallId = socket.data.lastCallId;
@@ -22,7 +23,7 @@ async function handleSocketMessage(socket, msg) {
         lastCallId: lastCallId,
     };
     const resumeResponse = await (0, openai_cua_client_1.sendInputToModel)(modelInput, msg);
-    const response = await (0, computer_use_loop_1.computerUseLoop)(page, resumeResponse, testCaseReviewAgent, socket);
+    const response = await (0, computer_use_loop_1.computerUseLoop)(page, resumeResponse, testCaseReviewAgent, runRecorder, socket);
     const messageResponse = response.output.filter((item) => item.type === "message");
     if (messageResponse.length > 0) {
         messageResponse.forEach((message) => {

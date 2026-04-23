@@ -117,7 +117,7 @@ class TestScriptReviewAgent {
       );
       logger.debug(`Test script state saved to: ${stateJsonPath}`);
     } catch (err) {
-      logger.error("Error saving test_script_state.json", err);
+      logger.error({ err }, "Error saving test_script_state.json");
     }
   }
 
@@ -153,7 +153,7 @@ class TestScriptReviewAgent {
       fs.writeFileSync(runJsonPath, JSON.stringify(runSummary, null, 2), "utf-8");
       logger.debug(`Run summary saved to: ${runJsonPath}`);
     } catch (err) {
-      logger.error("Error saving run summary", err);
+      logger.error({ err }, "Error saving run summary");
     }
   }
 
@@ -200,7 +200,7 @@ class TestScriptReviewAgent {
     try {
       fs.appendFileSync(eventsPath, JSON.stringify(event) + "\n", "utf-8");
     } catch (err) {
-      logger.error("Error appending events.jsonl", err);
+      logger.error({ err }, "Error appending events.jsonl");
     }
 
     this.persistRunSummaryJson();
@@ -262,7 +262,7 @@ class TestScriptReviewAgent {
       });
       return publicPath;
     } catch (err) {
-      logger.error("Error saving trace screenshot", err);
+      logger.error({ err }, "Error saving trace screenshot");
       this.appendTraceEvent("snapshot_save_failed", {
         screenshot_type: screenshotType,
         error: String(err),
@@ -555,7 +555,7 @@ class TestScriptReviewAgent {
         fs.writeFileSync(screenshotPathLocal, new Uint8Array(bufferData));
         logger.debug(`Screenshot saved to: ${screenshotPathLocal}`);
       } catch (err) {
-        logger.error("Error saving screenshot", err);
+        logger.error({ err }, "Error saving screenshot");
       }
 
       // Iterate through steps and attach the screenshot path only for those with a status change.

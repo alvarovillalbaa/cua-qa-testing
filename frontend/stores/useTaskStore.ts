@@ -1,25 +1,36 @@
 // /stores/useTaskStore.ts
 import { create } from "zustand";
-import { Step } from "@/stores/useConversationStore";
+import type {
+  CurrentRunSnapshot,
+  RunStepSnapshot,
+} from "@/lib/workspace-types";
 
 /* ───── Types ──────────────────────────────────────────────── */
-type Status = "pending" | "pass" | "fail";
+type Status =
+  | "idle"
+  | "draft"
+  | "pending"
+  | "running"
+  | "pass"
+  | "fail"
+  | "incomplete";
 
 interface TaskStoreState {
-  /* Test‑case steps coming from the backend */
-  testCases: Step[];
-  /* Aggregate status for the whole script */
+  testCases: RunStepSnapshot[];
   testCaseUpdateStatus: Status;
+  currentRunSnapshot: CurrentRunSnapshot | null;
 
-  /* ─── actions ─── */
-  setTestCases: (steps: Step[]) => void;
-  updateTestScript: (steps: Step[]) => void;
+  setTestCases: (steps: RunStepSnapshot[]) => void;
+  updateTestScript: (steps: RunStepSnapshot[]) => void;
   setTestCaseUpdateStatus: (status: Status) => void;
+  setCurrentRunSnapshot: (snapshot: CurrentRunSnapshot | null) => void;
+  clearRunState: () => void;
 }
 
 export const useTaskStore = create<TaskStoreState>()((set) => ({
   testCases: [],
-  testCaseUpdateStatus: "pending",
+  testCaseUpdateStatus: "idle",
+  currentRunSnapshot: null,
 
   setTestCases: (steps) => set({ testCases: steps }),
   updateTestScript: (steps) =>
@@ -46,6 +57,18 @@ export const useTaskStore = create<TaskStoreState>()((set) => ({
       return { testCases: mergedSteps };
     }),
   setTestCaseUpdateStatus: (status) => set({ testCaseUpdateStatus: status }),
+  setCurrentRunSnapshot: (snapshot) =>
+    set({
+      currentRunSnapshot: snapshot,
+      testCases: snapshot?.steps || [],
+      testCaseUpdateStatus: snapshot?.status || "idle",
+    }),
+  clearRunState: () =>
+    set({
+      currentRunSnapshot: null,
+      testCases: [],
+      testCaseUpdateStatus: "idle",
+    }),
 }));
 
 export default useTaskStore;

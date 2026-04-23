@@ -4,117 +4,138 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cuaLoopHandler = cuaLoopHandler;
-// lib/handlers/playwright-loop-handler.ts
 const playwright_1 = __importDefault(require("playwright"));
-const { chromium } = playwright_1.default;
 const logger_1 = __importDefault(require("../utils/logger"));
 const computer_use_loop_1 = require("../lib/computer-use-loop");
 const openai_cua_client_1 = require("../services/openai-cua-client");
 const login_service_1 = require("../services/login-service");
-// Read viewport dimensions from .env file with defaults if not set
+const workspace_paths_1 = require("../lib/workspace-paths");
+const learning_loop_1 = require("../learning/learning-loop");
+const evaluator_runner_1 = require("../evaluators/evaluator-runner");
+const final_output_runner_1 = require("../pipelines/final-output-runner");
+const openai_file_utils_1 = require("../lib/openai-file-utils");
 const displayWidth = parseInt(process.env.DISPLAY_WIDTH || "1024", 10);
 const displayHeight = parseInt(process.env.DISPLAY_HEIGHT || "768", 10);
-async function cuaLoopHandler(systemPrompt, url, socket, testCaseReviewAgent, username, password, loginRequired, userInfo) {
-    socket.data.testCaseStatus = "running";
-    testCaseReviewAgent.setRunStatus("running");
-    logger_1.default.info("Starting test script execution...");
-    socket.emit("message", "Starting test script execution...");
-    testCaseReviewAgent.appendTraceEvent("cua_loop_started", {
-        url,
-        login_required: loginRequired,
-    });
+function buildExtraHeaders(workspace) {
+    const headers = workspace.runDefaults.headers
+        .filter((header) => header.name && header.value)
+        .reduce((acc, header) => {
+        acc[header.name] = header.value;
+        return acc;
+    }, {});
+    if (workspace.secrets.extraHeaderName && workspace.secrets.extraHeaderValue) {
+        headers[workspace.secrets.extraHeaderName] =
+            workspace.secrets.extraHeaderValue;
+    }
+    return headers;
+}
+function buildContextOptions(workspace) {
+    const options = {};
+    const siteAccessMode = workspace.secrets.siteAccessMode || "none";
+    if (siteAccessMode === "headers") {
+        const extraHTTPHeaders = buildExtraHeaders(workspace);
+        if (Object.keys(extraHTTPHeaders).length > 0) {
+            options.extraHTTPHeaders = extraHTTPHeaders;
+        }
+    }
+    if (siteAccessMode === "http_basic") {
+        const username = workspace.secrets.siteAccessHttpUsername;
+        const password = workspace.secrets.siteAccessHttpPassword;
+        if (username && password) {
+            options.httpCredentials = {
+                username,
+                password,
+                origin: workspace.secrets.siteAccessOrigin || workspace.runDefaults.website,
+            };
+        }
+    }
+    return options;
+}
+function emitReviewState(socket, runRecorder, payload) {
     try {
-        // const browser = await chromium.launch({
-        //   headless: false,
-        //   env: {},
-        //   args: ["--disable-extensions", "--disable-file-system"],
-        // });
-        const { chromium } = playwright_1.default;
-        const browser = await chromium.launch({
+        const parsed = typeof payload === "string" ? JSON.parse(payload) : payload;
+        socket.emit("testscriptupdate", parsed);
+        runRecorder.updateFromReviewState(parsed);
+        runRecorder.emitSnapshot(socket);
+    }
+    catch (error) {
+        logger_1.default.error(`Failed to emit review state: ${error}`);
+    }
+}
+async function cuaLoopHandler(systemPrompt, url, socket, testCaseReviewAgent, runRecorder, username, password, loginRequired, userInfo, workspace) {
+    socket.data.testCaseStatus = "running";
+    runRecorder.setRunStatus("running");
+    testCaseReviewAgent.setRunStatus("running");
+    socket.emit("message", "Starting test script execution...");
+    runRecorder.emitSnapshot(socket);
+    let browser = null;
+    let context = null;
+    const resolvedWorkspace = workspace || runRecorder.getWorkspace();
+    const learningContext = (0, learning_loop_1.loadLearningContext)(resolvedWorkspace.project.id);
+    try {
+        browser = await playwright_1.default.chromium.launch({
             headless: false,
             env: {},
-            args: ["--disable-file-system"], // remove --disable-extensions if you want, but not needed anymore
+            args: ["--disable-file-system"],
         });
-        const context = await browser.newContext();
-        const extraHeaderName = process.env.EXTRA_HEADER_NAME;
-        const extraHeaderValue = process.env.EXTRA_HEADER_VALUE;
-        if (!extraHeaderName || !extraHeaderValue) {
-            throw new Error("Missing EXTRA_HEADER_NAME or EXTRA_HEADER_VALUE");
-        }
-        await context.setExtraHTTPHeaders({
-            [extraHeaderName]: extraHeaderValue,
-        });
+        const contextOptions = buildContextOptions(resolvedWorkspace);
+        logger_1.default.info({
+            siteAccessMode: resolvedWorkspace.secrets.siteAccessMode || "none",
+            siteAccessOrigin: resolvedWorkspace.secrets.siteAccessOrigin ||
+                resolvedWorkspace.runDefaults.website,
+            headerNames: Object.keys(contextOptions.extraHTTPHeaders || {}),
+            hasHttpCredentials: Boolean(contextOptions.httpCredentials?.username),
+            loginRequired,
+        }, "Creating browser context");
+        context = await browser.newContext(contextOptions);
+        await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
         const page = await context.newPage();
+        socket.data.page = page;
+        await runRecorder.attachPageListeners(page);
         logger_1.default.debug("Creating new browser instance...");
         socket.emit("message", "Launching browser...");
-        // Set the page as data in the socket.
-        socket.data.page = page;
-        // Set viewport dimensions using env values
         await page.setViewportSize({ width: displayWidth, height: displayHeight });
-        // Navigate to the provided URL from the form.
         await page.goto(url);
-        // wait for 2 seconds
         await page.waitForTimeout(2000);
-        // Capture an initial screenshot.
-        const screenshot_before_login = await page.screenshot();
-        const screenshot_before_login_base64 = screenshot_before_login.toString("base64");
-        // Asynchronously check the status of the test script.
-        const testScriptReviewResponsePromise = testCaseReviewAgent.checkTestScriptStatus(screenshot_before_login_base64);
-        // Asynchronously emit the test script review response to the socket.
-        testScriptReviewResponsePromise.then((testScriptReviewResponse) => {
-            logger_1.default.debug("Sending screenshot before login to Test Script Review Agent");
-            socket.emit("testscriptupdate", testScriptReviewResponse);
-            logger_1.default.trace(`Initial test script state emitted: ${JSON.stringify(testScriptReviewResponse, null, 2)}`);
+        await runRecorder.captureEvidence(page, "initial");
+        const screenshotBeforeLogin = await page.screenshot();
+        const screenshotBeforeLoginBase64 = screenshotBeforeLogin.toString("base64");
+        testCaseReviewAgent
+            .checkTestScriptStatus(screenshotBeforeLoginBase64)
+            .then((testScriptReviewResponse) => {
+            emitReviewState(socket, runRecorder, testScriptReviewResponse);
+        })
+            .catch((error) => {
+            logger_1.default.error(`Initial review failed: ${error}`);
         });
-        // Await till network is idle.
         await page.waitForTimeout(2000);
-        let modelInput;
         if (loginRequired) {
-            // Note to the developer: Different applications will need their own login handlers.
             logger_1.default.debug("Login required... proceeding with login.");
             socket.emit("message", "Login required... proceeding with login.");
             const loginService = new login_service_1.LoginService();
             await loginService.fillin_login_credentials(username, password, page);
-            logger_1.default.trace("Login execution completed... proceeding with test script execution.");
-            // wait for 5 seconds
             await page.waitForTimeout(5000);
-            const screenshot_after_login = await page.screenshot();
-            const screenshot_after_login_base64 = screenshot_after_login.toString("base64");
-            // Asynchronously check the status of the test script.
-            const testScriptReviewResponsePromise_after_login = testCaseReviewAgent.checkTestScriptStatus(screenshot_after_login_base64);
-            // Asynchronously emit the test script review response to the socket.
-            testScriptReviewResponsePromise_after_login.then((testScriptReviewResponse) => {
-                logger_1.default.debug("Sending screenshot after login to Test Script Review Agent");
-                // Emit the test script review response to the socket.
-                socket.emit("testscriptupdate", testScriptReviewResponse);
-                logger_1.default.trace(`Test script state emitted after login: ${JSON.stringify(testScriptReviewResponse, null, 2)}`);
-            });
             await loginService.click_login_button(page);
+            await runRecorder.captureEvidence(page, "post-login");
+            const screenshotAfterLogin = await page.screenshot();
+            const screenshotAfterLoginBase64 = screenshotAfterLogin.toString("base64");
+            testCaseReviewAgent
+                .checkTestScriptStatus(screenshotAfterLoginBase64)
+                .then((testScriptReviewResponse) => {
+                emitReviewState(socket, runRecorder, testScriptReviewResponse);
+            })
+                .catch((error) => {
+                logger_1.default.error(`Post-login review failed: ${error}`);
+            });
             socket.emit("message", "Login step executed... proceeding with test script execution.");
-            modelInput = {
-                screenshotBase64: screenshot_after_login_base64,
-                previousResponseId: undefined,
-                lastCallId: undefined,
-            };
         }
-        else {
-            // If login is not required, use the screenshot before login.
-            modelInput = {
-                screenshotBase64: screenshot_before_login_base64,
-                previousResponseId: undefined,
-                lastCallId: undefined,
-            };
-        }
-        // Start with an initial call (without a screenshot or call_id)
         const userInfoStr = userInfo ?? "";
-        let initial_response = await (0, openai_cua_client_1.setupCUAModel)(systemPrompt, userInfoStr);
-        testCaseReviewAgent.appendTraceEvent("model_response_received", {
-            response_id: initial_response?.id ?? null,
-            source: "setupCUAModel",
-        });
-        logger_1.default.debug(`Initial response from CUA model: ${JSON.stringify(initial_response, null, 2)}`);
-        logger_1.default.debug(`Starting computer use loop...`);
-        const response = await (0, computer_use_loop_1.computerUseLoop)(page, initial_response, testCaseReviewAgent, socket);
+        const { refs, inputFiles } = await (0, openai_file_utils_1.prepareOpenAIFileInputs)(resolvedWorkspace);
+        if (refs.length > 0) {
+            runRecorder.recordOpenAIFileRefs("cua_setup", refs);
+        }
+        const initialResponse = await (0, openai_cua_client_1.setupCUAModel)(systemPrompt, userInfoStr, inputFiles);
+        const response = await (0, computer_use_loop_1.computerUseLoop)(page, initialResponse, testCaseReviewAgent, runRecorder, socket);
         const messageResponse = response.output.filter((item) => item.type === "message");
         if (messageResponse.length > 0) {
             messageResponse.forEach((message) => {
@@ -129,9 +150,7 @@ async function cuaLoopHandler(systemPrompt, url, socket, testCaseReviewAgent, us
         }
     }
     catch (error) {
-        if (socket.data.testCaseStatus !== "pass" && socket.data.testCaseStatus !== "fail") {
-            socket.data.testCaseStatus = "fail";
-        }
+        socket.data.testCaseStatus = "fail";
         logger_1.default.error({
             message: error?.message,
             status: error?.status,
@@ -147,5 +166,38 @@ async function cuaLoopHandler(systemPrompt, url, socket, testCaseReviewAgent, us
             error: String(error),
         });
         testCaseReviewAgent.finalizeRun("fail", String(error));
+        runRecorder.setRunStatus("fail", String(error));
+        runRecorder.finalizeReviewStateOnFailure(String(error));
+        runRecorder.emitSnapshot(socket);
+    }
+    finally {
+        if (context) {
+            try {
+                await context.tracing.stop({
+                    path: (0, workspace_paths_1.getTracePath)(resolvedWorkspace.project.id, runRecorder.getRunId()),
+                });
+            }
+            catch (error) {
+                logger_1.default.warn(`Unable to stop tracing cleanly: ${error}`);
+            }
+        }
+        if (browser) {
+            try {
+                await browser.close();
+            }
+            catch {
+                // no-op
+            }
+        }
+        if (runRecorder.getStatus() === "running") {
+            runRecorder.setRunStatus("incomplete", "Run ended without a terminal verdict.");
+            runRecorder.emitSnapshot(socket);
+        }
+        const evaluatorResults = await (0, evaluator_runner_1.runEvaluators)(resolvedWorkspace, runRecorder, learningContext);
+        runRecorder.setEvaluatorResults(evaluatorResults);
+        const learningSummary = await (0, learning_loop_1.runLearningLoop)(resolvedWorkspace, runRecorder, evaluatorResults);
+        const finalOutput = await (0, final_output_runner_1.runFinalOutputPipeline)(resolvedWorkspace, runRecorder, evaluatorResults, learningSummary);
+        runRecorder.setFinalOutput(finalOutput.finalOutput);
+        socket.emit("message", `Post-processing completed. Evaluators: ${evaluatorResults.length}. Final output generated.`);
     }
 }

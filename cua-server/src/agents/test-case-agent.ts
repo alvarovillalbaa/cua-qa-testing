@@ -35,7 +35,7 @@ class TestCaseAgent {
    * Generate structured test steps via the Responses API.
    */
   async invokeResponseAPI(userInstruction: string): Promise<TestCase> {
-    logger.debug("Invoking Response API", { userInstruction });
+    logger.debug({ userInstruction }, "Invoking Response API");
     const response = await openai.responses.parse({
       model: this.model,
       input: [
@@ -46,7 +46,7 @@ class TestCaseAgent {
         format: zodTextFormat(TestCaseSchema, "test_case"),
       },
     });
-    logger.debug("Response API output", { output: response.output_parsed });
+    logger.debug({ output: response.output_parsed }, "Response API output");
     return response.output_parsed!;
   }
 }

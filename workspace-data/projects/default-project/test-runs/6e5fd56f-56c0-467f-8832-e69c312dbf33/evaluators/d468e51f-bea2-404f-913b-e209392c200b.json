@@ -1,0 +1,13 @@
+{
+  "id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "name": "Primary evaluator",
+  "status": "fail",
+  "verdict": "fail",
+  "score": 0,
+  "summary": "Error: 400 Mutually exclusive parameters: 'input[1].content[1]'. Ensure you are only providing one of: 'file_id' or 'filename'.",
+  "evidence": {
+    "transcript_turns": 402,
+    "current_action": null
+  }
+}

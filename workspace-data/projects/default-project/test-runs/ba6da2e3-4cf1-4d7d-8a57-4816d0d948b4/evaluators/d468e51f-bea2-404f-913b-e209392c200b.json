@@ -1,0 +1,13 @@
+{
+  "id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+  "name": "Primary evaluator",
+  "status": "fail",
+  "verdict": "fail",
+  "score": 0,
+  "summary": "Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+  "evidence": {
+    "transcript_turns": 0,
+    "current_action": null
+  }
+}

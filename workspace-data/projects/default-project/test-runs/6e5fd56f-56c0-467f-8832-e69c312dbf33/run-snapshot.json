@@ -1,0 +1,133 @@
+{
+  "runId": "6e5fd56f-56c0-467f-8832-e69c312dbf33",
+  "projectId": "default-project",
+  "testCaseId": "default-test-case",
+  "status": "fail",
+  "startedAt": "2026-04-23T15:04:41.644Z",
+  "finishedAt": "2026-04-23T15:05:46.236Z",
+  "errorInfo": "Error: 400 Mutually exclusive parameters: 'input[1].content[1]'. Ensure you are only providing one of: 'file_id' or 'filename'.",
+  "currentAction": null,
+  "steps": [
+    {
+      "step_number": 1,
+      "step_instructions": "Open a web browser and navigate to the URL: https://pre.iberia.com",
+      "status": "pass",
+      "step_reasoning": "The website loaded successfully as shown in the screenshot.",
+      "image_path": "/test_results/a2537c96-d223-42d7-a99b-2ddde45b93b7/098696b5-5ef6-4c96-b5b7-7456817e5ef9.png"
+    },
+    {
+      "step_number": 2,
+      "step_instructions": "Locate the IBot widget in the bottom-right corner of the page.",
+      "status": "fail",
+      "step_reasoning": "Error: 400 Mutually exclusive parameters: 'input[1].content[1]'. Ensure you are only providing one of: 'file_id' or 'filename'."
+    },
+    {
+      "step_number": 3,
+      "step_instructions": "Reset the chat by clicking on the pencil icon in the top-right corner.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to verify if the chat can be reset by using the pencil icon."
+    },
+    {
+      "step_number": 4,
+      "step_instructions": "For Test 40 (Informacional > RAG): Send the first message 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?' and wait for the IBot response (allow at least 30 seconds; if more than 90 seconds, note as a failure).",
+      "status": "not_run",
+      "step_reasoning": "Waiting for the response of the IBot to the simulated flight cancellation query."
+    },
+    {
+      "step_number": 5,
+      "step_instructions": "Capture the transcript from the first attempt including the exact JSON of Inputs and Outputs, recording 'Resultado 1er intento' and any tester comments.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to capture the transcript and verify JSON data output."
+    },
+    {
+      "step_number": 6,
+      "step_instructions": "Reset the chat by clicking the pencil icon again.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to verify if the chat resets again using the pencil icon."
+    },
+    {
+      "step_number": 7,
+      "step_instructions": "For Test 40 (Informacional > RAG): Send the second message 'Sí, revísame la reserva' and wait for the IBot response.",
+      "status": "not_run",
+      "step_reasoning": "Waiting for the response to the reservation review request."
+    },
+    {
+      "step_number": 8,
+      "step_instructions": "Capture the transcript of the second attempt for Test 40, including Inputs and Outputs (JSON) and record 'Resultado 2do intento' along with testing comments.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to capture and verify the second attempt transcript."
+    },
+    {
+      "step_number": 9,
+      "step_instructions": "Reset the chat using the pencil icon to begin Test 41.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to reset the chat for the next test start."
+    },
+    {
+      "step_number": 10,
+      "step_instructions": "For Test 41 (Consulta sobre asistencia/compensación): Send the first message '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?' and wait for the IBot response.",
+      "status": "not_run",
+      "step_reasoning": "Waiting for the IBot response to the compensation inquiry."
+    },
+    {
+      "step_number": 11,
+      "step_instructions": "Capture the transcript from the first attempt of Test 41, ensuring to record the exact JSON of Inputs and Outputs and note any responses as 'Resultado 1er intento'.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to capture the first attempt transcript accurately for Test 41."
+    },
+    {
+      "step_number": 12,
+      "step_instructions": "Reset the chat by clicking the pencil icon.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to reset the chat for subsequent testing."
+    },
+    {
+      "step_number": 13,
+      "step_instructions": "For Test 41 (Consulta sobre asistencia/compensación): Send the second message 'No, gracias' and wait for the response from IBot.",
+      "status": "not_run",
+      "step_reasoning": "Waiting for the IBot response to the negative follow-up inquiry."
+    },
+    {
+      "step_number": 14,
+      "step_instructions": "Capture the transcript from the second attempt of Test 41 including JSON of Inputs and Outputs, and record the 'Resultado 2do intento' along with comments.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to capture the second attempt transcript accurately for Test 41."
+    },
+    {
+      "step_number": 15,
+      "step_instructions": "Reset the chat using the pencil icon to begin Test 42.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to reset the chat for Test 42 initiation."
+    },
+    {
+      "step_number": 16,
+      "step_instructions": "For Test 42 (Transaccional > Identificación): Send the first message 'Acepto el otro vuelo, hacédmelo ya.' and wait for the IBot response (expecting a request for PNR and apellido).",
+      "status": "not_run",
+      "step_reasoning": "Waiting to evaluate IBot's response to the transactional request."
+    },
+    {
+      "step_number": 17,
+      "step_instructions": "Capture the transcript for the first attempt of Test 42, including the exact JSON of Inputs and Outputs and record 'Resultado 1er intento'.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to capture the first attempt transcript for Test 42 accurately."
+    },
+    {
+      "step_number": 18,
+      "step_instructions": "Reset the chat by clicking the pencil icon.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to reset the chat before another transactional query attempt."
+    },
+    {
+      "step_number": 19,
+      "step_instructions": "For Test 42 (Transaccional > Identificación): Send the message 'Acepto el otro vuelo, hacédmelo ya.' again to perform the second attempt and wait for the IBot response.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to confirm consistent response to repeated transactional requests."
+    },
+    {
+      "step_number": 20,
+      "step_instructions": "Capture the transcript for the second attempt of Test 42, including exact Inputs and Outputs (JSON) and record 'Resultado 2do intento' along with any tester comments.",
+      "status": "not_run",
+      "step_reasoning": "Waiting to verify and capture the transcript for the second attempt in Test 42."
+    }
+  ]
+}

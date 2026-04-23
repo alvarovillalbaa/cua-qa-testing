@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0",
+  "run_id": "a96e9cfd-3708-41ca-987e-3c58e89b92a7",
+  "project_id": "default-project",
+  "test_case_id": "default-test-case",
+  "trigger": "Manual trigger from localhost:3000",
+  "started_at": "2026-04-23T14:16:12.175Z",
+  "finished_at": "2026-04-23T14:16:40.916Z",
+  "status": "fail",
+  "error_info": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+  "current_action": null,
+  "evaluators": [
+    {
+      "id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "name": "Primary evaluator",
+      "status": "fail",
+      "verdict": "fail",
+      "score": 0,
+      "summary": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+      "evidence": {
+        "transcript_turns": 0,
+        "current_action": null
+      }
+    }
+  ],
+  "chat_transcript": [],
+  "extractor_results": [],
+  "evaluator_results": [
+    {
+      "id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+      "name": "Primary evaluator",
+      "status": "fail",
+      "verdict": "fail",
+      "score": 0,
+      "summary": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+      "evidence": {
+        "transcript_turns": 0,
+        "current_action": null
+      }
+    }
+  ],
+  "final_output": {
+    "verdict": "fail",
+    "summary": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+    "transcript": [],
+    "evaluators": [
+      {
+        "id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "evaluator_id": "d468e51f-bea2-404f-913b-e209392c200b",
+        "name": "Primary evaluator",
+        "status": "fail",
+        "verdict": "fail",
+        "score": 0,
+        "summary": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n",
+        "evidence": {
+          "transcript_turns": 0,
+          "current_action": null
+        }
+      }
+    ],
+    "datasets": [
+      {
+        "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+        "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+        "sheets": [
+          {
+            "sheetName": "Sheet1",
+            "columns": [
+              "ID",
+              "RAMA",
+              "Resolución",
+              "MOTIVO",
+              "INPUTS (JSON)",
+              "Menú",
+              "Esperado",
+              "Inputs y Outputs (JSON)",
+              "Resultado 1er Intento",
+              "Resultado 2do Intento",
+              "Nombre Tester",
+              "Comentarios testing"
+            ],
+            "sampleRows": [
+              {
+                "ID": 1,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre condiciones y costes de cambio de fecha/hora",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Cómo puedo cambiar la fecha de mi vuelo y qué costes o suplementos podría tener?\"}]",
+                "Menú": "Debe tratarlo como consulta informacional sobre cambio voluntario. No debe activar el flujo transaccional ni pedir PNR + apellido en el primer mensaje.",
+                "Esperado": "Responde en modo RAG con explicación general del proceso, posibles costes/suplementos y pasos de autogestión. Puede invitar a revisar una reserva concreta, pero no debe asumir intención transaccional cerrada.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 2,
+                "RAMA": "Informacional > RAG",
+                "Resolución": "RAG informacional",
+                "MOTIVO": "Consulta general sobre cambio de ruta",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"¿Se puede cambiar el destino de un billete de Iberia o solo la fecha?\"}]",
+                "Menú": "Debe resolverlo como duda informacional y explicar la diferencia entre cambio de ruta y cambio de fecha/hora.",
+                "Esperado": "Explica que el cambio de ruta no es autogestionable en este flujo y responde de forma informacional. No debe pedir PNR ni entrar directamente en la rama agentic.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              },
+              {
+                "ID": 3,
+                "RAMA": "Transaccional > Inicio",
+                "Resolución": "Solicita validación de causa médica",
+                "MOTIVO": "Inicio transaccional genérico sin detallar tipo de cambio",
+                "INPUTS (JSON)": "[{\"turn\": 1, \"text\": \"Quiero cambiar mi vuelo.\"}]",
+                "Menú": "Primer paso del flujo: preguntar si el cambio es por causa médica e incluir recordatorio del formulario médico.",
+                "Esperado": "Pregunta de forma clara si el cambio se debe a una causa médica debidamente justificada. No debe pedir todavía PNR + apellido ni derivar a web/app.",
+                "Inputs y Outputs (JSON)": "",
+                "Resultado 1er Intento": "",
+                "Resultado 2do Intento": "",
+                "Nombre Tester": "",
+                "Comentarios testing": ""
+              }
+            ],
+            "rowCount": 53
+          }
+        ]
+      }
+    ],
+    "learning_context": "Autoresearch-derived testing memory:\n- Runtime failure: Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n\n- No transcript turns extracted. Prefer stronger DOM/network selectors.\n- Failed evaluators: Primary evaluator\n- Runtime failure: Error: browserType.launch: Executable doesn't exist at /Users/alvarovillalba/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     npx playwright install                                 ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝"
+  },
+  "openai_file_refs": [
+    {
+      "scope": "evaluator:d468e51f-bea2-404f-913b-e209392c200b",
+      "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "fileId": "file-Cad3ofSZx4Sm8kqZQdmunQ",
+      "mode": "uploaded"
+    },
+    {
+      "scope": "final_output",
+      "assetId": "a94f47ba-e322-4390-826a-7772520bfe6e",
+      "name": "TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "relativePath": "workspace-data/projects/default-project/test-cases/default-test-case/assets/a94f47ba-e322-4390-826a-7772520bfe6e-TEST_SET_cambio_vuelo_voluntario__22-04-2026.csv",
+      "fileId": "file-EKT1PGAH6nqutjQ4ComNio",
+      "mode": "uploaded"
+    }
+  ],
+  "captured_data": [],
+  "artifacts": [],
+  "step_count": 11,
+  "steps": [
+    {
+      "step_number": 1,
+      "step_instructions": "Open the browser and navigate to the login URL: https://pre.iberia.com.",
+      "status": "fail",
+      "step_reasoning": "Error: page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://pre.iberia.com/\nCall log:\n\u001b[2m  - navigating to \"https://pre.iberia.com/\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "step_number": 2,
+      "step_instructions": "Enter username 'Cua Blossom' and password (use secure credentials).",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 3,
+      "step_instructions": "Click the 'Log In' button and verify successful sign‑in.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 4,
+      "step_instructions": "On the home page, locate the IBot (Iberia chatbot) in the bottom right corner of the website.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 5,
+      "step_instructions": "For Test 40 (1st Attempt): Reset the chat by clicking the pencil icon in the upper right (or reload the page if needed). Then send the message 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?'. Wait at least 30 seconds, and up to 90 seconds, for the response. Capture the exact transcript (Inputs and Outputs JSON) along with the result of the first attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 6,
+      "step_instructions": "For Test 40 (2nd Attempt): If the response was unsatisfactory or errors occurred, reset the chat using the pencil icon, and resend the same message 'Me habéis cancelado el vuelo de esta noche, ¿qué puedo hacer ahora?'. Wait for the response and capture the transcript (Inputs and Outputs JSON) along with the result of the second attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 7,
+      "step_instructions": "For Test 41 (1st Attempt): Reset the chat as before, then send the message '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?'. Wait for the response (30-90 seconds), and capture the transcript (Inputs and Outputs JSON) along with the result of the first attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 8,
+      "step_instructions": "For Test 41 (2nd Attempt): Reset the chat again, resend the message '¿Me corresponde hotel, comida o alguna compensación por esta cancelación?'. Wait for the response and capture the transcript (Inputs and Outputs JSON) along with the result of the second attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 9,
+      "step_instructions": "For Test 42 (1st Attempt): Reset the chat using the pencil icon and send the message 'Acepto el otro vuelo, hacédmelo ya.'. Wait 30-90 seconds for the response. Capture the transcript (Inputs and Outputs JSON) and note that the IBot should first request PNR + apellido before any further processing.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 10,
+      "step_instructions": "For Test 42 (2nd Attempt): If the first attempt did not work as expected, reset the chat and resend 'Acepto el otro vuelo, hacédmelo ya.' again. Wait for the response and capture the transcript (Inputs and Outputs JSON) along with the result of the second attempt.",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    },
+    {
+      "step_number": 11,
+      "step_instructions": "After completing the tests, compile and store all captured transcripts (exact Inputs and Outputs in JSON), along with the results of both attempts (Resultado 1er intento, Resultado 2do intento) and any additional testing comments ('Comentarios testing').",
+      "status": "not_run",
+      "step_reasoning": "Run terminated before this step could execute."
+    }
+  ]
+}

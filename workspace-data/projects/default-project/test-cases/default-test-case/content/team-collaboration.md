@@ -1,0 +1,1 @@
+Team collaboration is persisted in the repo-backed workspace files and reused across runs.
